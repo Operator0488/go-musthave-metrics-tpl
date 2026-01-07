@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
-	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/model"
+	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
 	"strconv"
 	"sync"
 )

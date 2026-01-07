@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
-	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/handler"
-	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/repository"
-	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/service"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/handler"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/repository"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/service"
+	"net/http"
 )
 
 func main() {
@@ -20,7 +21,7 @@ func run(ctx context.Context) error {
 	mux := handler.NewStorageHandler(ctx, srv)
 	rout := handler.NewRoute(mux)
 
-	if err := handler.Listner(":8080", rout); err != nil {
+	if err := http.ListenAndServe(":8080", rout); err != nil {
 		return err
 	}
 

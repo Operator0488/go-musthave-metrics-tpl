@@ -24,16 +24,6 @@ func checkPost(next http.Handler) http.Handler {
 	})
 }
 
-func checkContentType(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Header.Get("Content-Type") != "text/plain" {
-			errorBadRequest(w, "Invalid Content-Type")
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
-}
-
 func logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		next.ServeHTTP(w, r)

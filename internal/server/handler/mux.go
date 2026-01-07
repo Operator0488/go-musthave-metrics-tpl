@@ -3,8 +3,8 @@ package handler
 import (
 	"context"
 	"fmt"
-	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/model"
-	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/service"
+	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/service"
 	"log"
 	"net/http"
 	"strings"
@@ -26,7 +26,6 @@ func NewRoute(h Handler) *http.ServeMux {
 		"/update/{type}/{name}/{value}",
 		middleConveyor(
 			http.HandlerFunc(h.PostUpdate),
-			//checkContentType,
 			checkPost,
 			logging,
 		))
@@ -68,10 +67,6 @@ func getUpdateRequest(addr string) (*models.UpdateRequest, error) {
 
 	if shares[1] != models.Gauge && shares[1] != models.Counter {
 		return nil, fmt.Errorf("Ошибка: неправильный тип, %v", shares[1])
-	}
-
-	if shares[2] == "" && shares[3] == "" {
-		return nil, fmt.Errorf("Ошибка: неправильное имя или значение, имя: %v, значени: %v", shares[2], shares[3])
 	}
 
 	req := models.UpdateRequest{

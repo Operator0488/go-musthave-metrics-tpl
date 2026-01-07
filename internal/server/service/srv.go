@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 	"fmt"
-	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/model"
-	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/repository"
+	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/repository"
 	"strconv"
 )
 
