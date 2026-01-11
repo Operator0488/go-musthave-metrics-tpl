@@ -7,7 +7,7 @@ type MockService struct {
 	Err    error
 }
 
-func (m *MockService) Sender(req *models.UpdateRequest) error {
+func (m *MockService) SenderPostUpdate(req *models.PostUpdateRequest) error {
 	m.Called = true
 	return m.Err
 }

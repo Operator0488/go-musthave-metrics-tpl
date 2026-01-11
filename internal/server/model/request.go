@@ -1,7 +1,12 @@
 package models
 
-type UpdateRequest struct {
+type PostUpdateRequest struct {
 	Type  string
 	Name  string
 	Value string
+}
+
+type GetValueRequest struct {
+	Type string
+	Name string
 }

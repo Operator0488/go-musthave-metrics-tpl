@@ -1,12 +1,19 @@
 .PHONY: test1 test build clean
 test1:
-	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration1$$ \
+	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration1 \
       -binary-path=cmd/server/server \
       -source-path=.
 
 .PHONY: test2 test build clean
 test2:
 	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration2 \
+	  -agent-binary-path=cmd/agent/agent \
+      -binary-path=cmd/server/server \
+      -source-path=.
+
+.PHONY: test3 test build clean
+test3:
+	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration3 \
 	  -agent-binary-path=cmd/agent/agent \
       -binary-path=cmd/server/server \
       -source-path=.

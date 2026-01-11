@@ -19,7 +19,7 @@ func run(ctx context.Context) error {
 	str := repository.NewMaps(ctx)
 	srv := service.NewStorageService(ctx, str)
 	mux := handler.NewStorageHandler(ctx, srv)
-	rout := handler.NewRoute(mux)
+	rout := handler.NewChiRoute(mux)
 
 	if err := http.ListenAndServe(":8080", rout); err != nil {
 		return err

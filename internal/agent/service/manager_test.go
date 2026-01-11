@@ -127,9 +127,6 @@ func TestStatsManager_GetMap_ReturnsSnapshot(t *testing.T) {
 		t.Fatal("expected different *Stat pointers for Alloc between snapshots, got same pointer")
 	}
 
-	// 4) Изменения в snapshot НЕ должны протекать внутрь менеджера
-
-	// 4.1) Меняем значение внутри Stat в snapshot
 	snap1[model.Alloc].Value = 123456789
 
 	after := mn.GetMap()

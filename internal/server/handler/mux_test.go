@@ -135,7 +135,7 @@ func Test_getUpdateRequest(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req, err := getUpdateRequest(tt.path)
+			req, err := postUpdateRequest(tt.path)
 			if tt.wantErr && err == nil {
 				t.Fatal("expected error, got nil")
 			}

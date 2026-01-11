@@ -43,7 +43,7 @@ func TestStorageService_Sender(t *testing.T) {
 		storage repository.MemStorage
 	}
 	type args struct {
-		req *models.UpdateRequest
+		req *models.PostUpdateRequest
 	}
 	tests := []struct {
 		name    string
@@ -58,7 +58,7 @@ func TestStorageService_Sender(t *testing.T) {
 				storage: mock.NewMapsMock(),
 			},
 			args: args{
-				req: &models.UpdateRequest{
+				req: &models.PostUpdateRequest{
 					Type:  models.Counter,
 					Name:  "Count",
 					Value: "123",
@@ -73,7 +73,7 @@ func TestStorageService_Sender(t *testing.T) {
 				storage: mock.NewMapsMock(),
 			},
 			args: args{
-				req: &models.UpdateRequest{
+				req: &models.PostUpdateRequest{
 					Type:  models.Gauge,
 					Name:  "Counter",
 					Value: "123",
@@ -88,7 +88,7 @@ func TestStorageService_Sender(t *testing.T) {
 				storage: mock.NewMapsMock(),
 			},
 			args: args{
-				req: &models.UpdateRequest{
+				req: &models.PostUpdateRequest{
 					Type:  models.Counter,
 					Name:  "Counter",
 					Value: "fsgfsffg",
@@ -103,7 +103,7 @@ func TestStorageService_Sender(t *testing.T) {
 				storage: mock.NewMapsMock(),
 			},
 			args: args{
-				req: &models.UpdateRequest{
+				req: &models.PostUpdateRequest{
 					Type:  models.Counter,
 					Name:  "Gauge",
 					Value: "123.01",
@@ -118,7 +118,7 @@ func TestStorageService_Sender(t *testing.T) {
 				storage: mock.NewMapsMock(),
 			},
 			args: args{
-				req: &models.UpdateRequest{
+				req: &models.PostUpdateRequest{
 					Type:  models.Gauge,
 					Name:  "Gauge",
 					Value: "123.01",
@@ -133,7 +133,7 @@ func TestStorageService_Sender(t *testing.T) {
 				storage: mock.NewMapsMock(),
 			},
 			args: args{
-				req: &models.UpdateRequest{
+				req: &models.PostUpdateRequest{
 					Type:  models.Gauge,
 					Name:  "Counter",
 					Value: "123.01",
@@ -148,7 +148,7 @@ func TestStorageService_Sender(t *testing.T) {
 				storage: mock.NewMapsMock(),
 			},
 			args: args{
-				req: &models.UpdateRequest{
+				req: &models.PostUpdateRequest{
 					Type:  models.Gauge,
 					Name:  "Gauge",
 					Value: "123",
@@ -163,7 +163,7 @@ func TestStorageService_Sender(t *testing.T) {
 				storage: mock.NewMapsMock(),
 			},
 			args: args{
-				req: &models.UpdateRequest{
+				req: &models.PostUpdateRequest{
 					Type:  "node",
 					Name:  "Counter",
 					Value: "123.01",
@@ -178,7 +178,7 @@ func TestStorageService_Sender(t *testing.T) {
 				storage: mock.NewMapsMock(),
 			},
 			args: args{
-				req: &models.UpdateRequest{
+				req: &models.PostUpdateRequest{
 					Type:  models.Gauge,
 					Name:  "Counter",
 					Value: "fgjn",
@@ -193,8 +193,8 @@ func TestStorageService_Sender(t *testing.T) {
 				ctx:     tt.fields.ctx,
 				storage: tt.fields.storage,
 			}
-			if err := s.Sender(tt.args.req); (err != nil) != tt.wantErr {
-				t.Errorf("Sender() error = %v, wantErr %v", err, tt.wantErr)
+			if err := s.SenderPostUpdate(tt.args.req); (err != nil) != tt.wantErr {
+				t.Errorf("SenderPostUpdate() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
