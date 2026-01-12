@@ -18,6 +18,14 @@ test3:
       -binary-path=cmd/server/server \
       -source-path=.
 
+.PHONY: test4 test build clean
+test4:
+	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration4$ \
+      -agent-binary-path=cmd/agent/agent \
+      -binary-path=cmd/server/server \
+      -server-port=8080 \
+      -source-path=.
+
 .PHONY: buildServer
 buildServer:
 	@go build -o cmd/server/server cmd/server/*.go

@@ -2,30 +2,33 @@ package main
 
 import (
 	"context"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/config"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/handler"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/service"
+	"log"
 	"time"
-)
-
-const (
-	pollInterval   = 2 //секунды
-	reportInterval = 10
 )
 
 func main() {
 	ctx := context.Background()
-	if err := run(ctx); len(err) != 0 {
+	conf := config.NewAgentConfig()
+	if err := parseFlags(&conf.Port, &conf.ReportInterval, &conf.PollInterval); err != nil {
+		log.Println(err)
+		return
+	}
+
+	if err := run(ctx, conf); len(err) != 0 {
 		panic(err)
 	}
 }
 
-func run(ctx context.Context) []error {
+func run(ctx context.Context, conf config.AgentConfig) []error {
 
 	mn := service.NewStatsManager(ctx)
-	client := handler.NewClient(ctx, mn)
+	client := handler.NewClient(ctx, mn, conf)
 
-	pollTicker := time.NewTicker(pollInterval * time.Second)
-	reportTicker := time.NewTicker(reportInterval * time.Second)
+	pollTicker := time.NewTicker(time.Duration(conf.PollInterval) * time.Second)
+	reportTicker := time.NewTicker(time.Duration(conf.ReportInterval) * time.Second)
 	defer pollTicker.Stop()
 	defer reportTicker.Stop()
 
