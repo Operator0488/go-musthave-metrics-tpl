@@ -12,15 +12,11 @@ import (
 	"testing"
 )
 
-// ---- helpers ----
-
 func asSorted(in []string) []string {
 	cp := append([]string(nil), in...)
 	sort.Strings(cp)
 	return cp
 }
-
-// ---- tests ----
 
 func TestClient_GetRequests(t *testing.T) {
 	mn := &mock.MockManager{
@@ -44,7 +40,6 @@ func TestClient_GetRequests(t *testing.T) {
 }
 
 func TestClient_SendRequest_CollectsErrorsOnNon200(t *testing.T) {
-	// Поднимаем сервер строго на 127.0.0.1:8080, потому что GetRequests() захардкожен.
 	ln, err := net.Listen("tcp", "127.0.0.1:8080")
 	if err != nil {
 		t.Skipf("port 8080 is busy on this machine: %v", err)
@@ -77,26 +72,4 @@ func TestClient_SendRequest_CollectsErrorsOnNon200(t *testing.T) {
 	if len(errs) != 1 {
 		t.Fatalf("expected 1 error, got %d: %+v", len(errs), errs)
 	}
-}
-
-func TestClient_SendRequest_PanicsOnPostErrorBecauseRespNil(t *testing.T) {
-	// Этот тест демонстрирует текущий баг.
-	// Не поднимаем сервер на 127.0.0.1:8080 => Post вернет err, resp будет nil,
-	// а код попробует прочитать resp.StatusCode => panic.
-
-	mn := &mock.MockManager{
-		M: map[string]*model.Stat{
-			"nope": {Type: "gauge", Value: 1},
-		},
-	}
-
-	c := NewClient(context.Background(), mn)
-
-	defer func() {
-		if r := recover(); r == nil {
-			t.Fatal("expected panic, got none")
-		}
-	}()
-
-	_ = c.SendRequest()
 }
