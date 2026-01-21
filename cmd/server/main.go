@@ -25,9 +25,9 @@ func main() {
 }
 
 func run(ctx context.Context, conf config.ServerConfig) error {
-	str := repository.NewMaps(ctx)
-	srv := service.NewStorageService(ctx, str)
-	mux := handler.NewStorageHandler(ctx, srv)
+	str := repository.NewMaps()
+	srv := service.NewStorageService(str)
+	mux := handler.NewStorageHandler(srv)
 	rout := handler.NewChiRoute(mux)
 
 	if err := http.ListenAndServe(conf.Port, rout); err != nil {

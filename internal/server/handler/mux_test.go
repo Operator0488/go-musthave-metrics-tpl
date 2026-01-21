@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"context"
 	"errors"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/service/mock"
 	"net/http"
@@ -11,7 +10,7 @@ import (
 
 func TestNewRoute(t *testing.T) {
 	svc := &mock.MockService{}
-	h := NewStorageHandler(context.Background(), svc)
+	h := NewStorageHandler(svc)
 
 	router := NewRoute(h)
 
@@ -62,7 +61,7 @@ func TestStorageHandler_PostUpdate(t *testing.T) {
 			srv := &mock.MockService{
 				Err: tt.serviceErr,
 			}
-			h := NewStorageHandler(context.Background(), srv)
+			h := NewStorageHandler(srv)
 
 			req := httptest.NewRequest(http.MethodPost, tt.path, nil)
 			rec := httptest.NewRecorder()

@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
@@ -13,7 +12,6 @@ import (
 )
 
 type StorageHandler struct {
-	ctx     context.Context
 	service service.Service
 }
 
@@ -60,10 +58,9 @@ func NewChiRoute(h Handler) http.Handler {
 }
 
 // NewStorageHandler -
-func NewStorageHandler(ctx context.Context, service service.Service) *StorageHandler {
+func NewStorageHandler(service service.Service) *StorageHandler {
 	return &StorageHandler{
 		service: service,
-		ctx:     ctx,
 	}
 }
 

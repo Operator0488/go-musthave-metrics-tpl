@@ -24,8 +24,8 @@ func main() {
 
 func run(ctx context.Context, conf config.AgentConfig) []error {
 
-	mn := service.NewStatsManager(ctx)
-	client := handler.NewClient(ctx, mn, conf)
+	mn := service.NewStatsManager()
+	client := handler.NewClientResty(mn, conf)
 
 	pollTicker := time.NewTicker(time.Duration(conf.PollInterval) * time.Second)
 	reportTicker := time.NewTicker(time.Duration(conf.ReportInterval) * time.Second)

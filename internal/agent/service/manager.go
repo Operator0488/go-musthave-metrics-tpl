@@ -1,7 +1,6 @@
 package service
 
 import (
-	"context"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/model"
 	"math/rand/v2"
 	"runtime"
@@ -9,9 +8,8 @@ import (
 )
 
 type StatsManager struct {
-	ctx context.Context
-	m   map[string]*model.Stat
-	mu  sync.RWMutex
+	m  map[string]*model.Stat
+	mu sync.RWMutex
 }
 
 type Manager interface {
@@ -20,11 +18,10 @@ type Manager interface {
 }
 
 // NewStatsManager -
-func NewStatsManager(ctx context.Context) *StatsManager {
+func NewStatsManager() *StatsManager {
 
 	var s = StatsManager{
-		ctx: ctx,
-		m:   NewMap(),
+		m: NewMap(),
 	}
 	s.WriteStats()
 

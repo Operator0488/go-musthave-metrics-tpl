@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"context"
-	"fmt"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
 	"log"
 	"strconv"
@@ -14,19 +12,17 @@ type MemStorage interface {
 	IncrementValue(string, int64) error
 	GetValueGauge(string) (float64, error)
 	GetValueCounter(string) (int64, error)
-	GetValues() (map[string]interface{}, error)
+	GetValues() (map[string]any, error)
 }
 
 type Maps struct {
-	ctx     context.Context
 	storage map[string]models.Metrics
 
 	mu sync.RWMutex
 }
 
-func NewMaps(ctx context.Context) *Maps {
+func NewMaps() *Maps {
 	return &Maps{
-		ctx:     ctx,
 		storage: make(map[string]models.Metrics),
 	}
 }
@@ -38,7 +34,7 @@ func (m *Maps) SaverValue(name string, value float64) error {
 
 	if metric, ok := m.storage[name]; ok {
 		if metric.MType != models.Gauge {
-			return fmt.Errorf("Ошибка: переменная в базе другого типа")
+			return models.ErrorDiffType
 		}
 		log.Println(value)
 		*metric.Value = value
@@ -62,7 +58,7 @@ func (m *Maps) IncrementValue(name string, value int64) error {
 
 	if metric, ok := m.storage[name]; ok {
 		if metric.MType != models.Counter {
-			return fmt.Errorf("Ошибка: переменная в базе другого типа")
+			return models.ErrorGetValue
 		}
 		*metric.Delta += value
 		return nil
@@ -88,11 +84,11 @@ func (m *Maps) GetValueGauge(s string) (float64, error) {
 			n := metric.Value
 			return *n, nil
 		} else {
-			return 0, fmt.Errorf("Ошибка: переменная в базе другого типа")
+			return 0, models.ErrorDiffType
 		}
 	}
 
-	return 0, fmt.Errorf("Ошибка: переменной нет в базе")
+	return 0, models.ErrorNotDB
 }
 
 // GetValueCounter -
@@ -105,16 +101,16 @@ func (m *Maps) GetValueCounter(s string) (int64, error) {
 			n := metric.Delta
 			return *n, nil
 		} else {
-			return 0, fmt.Errorf("Ошибка: переменная в базе другого типа")
+			return 0, models.ErrorDiffType
 		}
 
 	}
 
-	return 0, fmt.Errorf("Ошибка: переменной нет в базе")
+	return 0, models.ErrorNotDB
 }
 
 // GetValues -
-func (m *Maps) GetValues() (map[string]interface{}, error) {
+func (m *Maps) GetValues() (map[string]any, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -129,7 +125,7 @@ func (m *Maps) GetValues() (map[string]interface{}, error) {
 			value := v.Delta
 			storage[k] = *value
 		default:
-			return nil, fmt.Errorf("Есть непредвиденный тип данных в базе")
+			return nil, models.ErrorUnType
 		}
 	}
 

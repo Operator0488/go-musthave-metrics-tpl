@@ -1,7 +1,6 @@
 package service
 
 import (
-	"context"
 	"fmt"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/repository"
@@ -10,25 +9,23 @@ import (
 )
 
 type StorageService struct {
-	ctx     context.Context
 	storage repository.MemStorage
 }
 
 type Service interface {
 	SenderPostUpdate(req *models.PostUpdateRequest) error
 	SenderGetValue(req *models.GetValueRequest) (string, error)
-	SenderGetValues() (map[string]interface{}, error)
+	SenderGetValues() (map[string]any, error)
 }
 
-func NewStorageService(ctx context.Context, storage repository.MemStorage) *StorageService {
+func NewStorageService(storage repository.MemStorage) *StorageService {
 	return &StorageService{
-		ctx:     ctx,
 		storage: storage,
 	}
 }
 
 // SenderGetValues -
-func (s *StorageService) SenderGetValues() (map[string]interface{}, error) {
+func (s *StorageService) SenderGetValues() (map[string]any, error) {
 	return s.storage.GetValues()
 }
 
