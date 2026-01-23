@@ -3,14 +3,18 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/config"
+	"github.com/caarlos0/env/v6"
 )
 
-func parseFlags(port *string) error {
-	flag.StringVar(port, "a", "localhost:8080", "address and port to run server")
-	flag.Parse()
+func parseFlags(conf *config.ServerConfig) error {
 
-	log.Println("port server:", port)
+	_ = env.Parse(conf)
+
+	if conf.Port == "" {
+		flag.StringVar(&conf.Port, "a", "localhost:8080", "address and port to run server")
+		flag.Parse()
+	}
 
 	if len(flag.Args()) > 0 {
 		return fmt.Errorf("Ошибка, неизвестные флаги: %v", flag.Args())

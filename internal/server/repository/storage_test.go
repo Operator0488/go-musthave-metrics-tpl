@@ -88,7 +88,6 @@ func TestMaps_IncrementValue(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &Maps{
-				ctx:     tt.fields.ctx,
 				storage: tt.fields.storage,
 				mu:      tt.fields.mu,
 			}
@@ -191,7 +190,6 @@ func TestMaps_SaverValue(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &Maps{
-				ctx:     tt.fields.ctx,
 				storage: tt.fields.storage,
 				mu:      tt.fields.mu,
 			}
@@ -221,7 +219,7 @@ func TestNewMaps(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewMaps(tt.args.ctx); !reflect.DeepEqual(reflect.TypeOf(got).Name(), reflect.TypeOf(tt.want).Name()) {
+			if got := NewMaps(); !reflect.DeepEqual(reflect.TypeOf(got).Name(), reflect.TypeOf(tt.want).Name()) {
 				t.Errorf("NewMaps() = %v, want %v", got, tt.want)
 			}
 		})

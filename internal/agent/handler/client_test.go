@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"context"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/config"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/model"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/service/mock"
 	"net"
@@ -26,7 +26,13 @@ func TestClient_GetRequests(t *testing.T) {
 		},
 	}
 
-	c := NewClient(context.Background(), mn)
+	conf := config.AgentConfig{
+		Port:           "127.0.0.1:8080",
+		PollInterval:   2,
+		ReportInterval: 10,
+	}
+
+	c := NewClientResty(mn, conf)
 
 	got := asSorted(c.GetRequests())
 	want := asSorted([]string{
@@ -66,7 +72,13 @@ func TestClient_SendRequest_CollectsErrorsOnNon200(t *testing.T) {
 		},
 	}
 
-	c := NewClient(context.Background(), mn)
+	conf := config.AgentConfig{
+		Port:           "127.0.0.1:8080",
+		PollInterval:   2,
+		ReportInterval: 10,
+	}
+
+	c := NewClientResty(mn, conf)
 
 	errs := c.SendRequest()
 	if len(errs) != 1 {

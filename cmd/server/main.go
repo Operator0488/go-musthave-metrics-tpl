@@ -14,7 +14,7 @@ func main() {
 	ctx := context.Background()
 
 	conf := config.NewServerConfig()
-	if err := parseFlags(&conf.Port); err != nil {
+	if err := parseFlags(&conf); err != nil {
 		log.Println(err)
 		return
 	}

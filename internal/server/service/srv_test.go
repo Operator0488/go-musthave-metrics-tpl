@@ -30,7 +30,7 @@ func TestNewStorageService(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewStorageService(tt.args.ctx, tt.args.storage); !reflect.DeepEqual(reflect.TypeOf(got).Name(), reflect.TypeOf(tt.want).Name()) {
+			if got := NewStorageService(tt.args.storage); !reflect.DeepEqual(reflect.TypeOf(got).Name(), reflect.TypeOf(tt.want).Name()) {
 				t.Errorf("NewStorageService() = %v, want %v", got, tt.want)
 			}
 		})
@@ -190,7 +190,6 @@ func TestStorageService_Sender(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &StorageService{
-				ctx:     tt.fields.ctx,
 				storage: tt.fields.storage,
 			}
 			if err := s.SenderPostUpdate(tt.args.req); (err != nil) != tt.wantErr {

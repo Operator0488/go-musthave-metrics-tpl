@@ -37,7 +37,7 @@ func TestNewStatsManager(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewStatsManager(tt.args.ctx); !reflect.DeepEqual(got, tt.want) {
+			if got := NewStatsManager(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewStatsManager() = %v, want %v", got, tt.want)
 			}
 		})
@@ -60,9 +60,8 @@ func TestStatsManager_GetMap(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &StatsManager{
-				ctx: tt.fields.ctx,
-				m:   tt.fields.m,
-				mu:  tt.fields.mu,
+				m:  tt.fields.m,
+				mu: tt.fields.mu,
 			}
 			if got := m.GetMap(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetMap() = %v, want %v", got, tt.want)
@@ -86,9 +85,8 @@ func TestStatsManager_WriteStats(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &StatsManager{
-				ctx: tt.fields.ctx,
-				m:   tt.fields.m,
-				mu:  tt.fields.mu,
+				m:  tt.fields.m,
+				mu: tt.fields.mu,
 			}
 			m.WriteStats()
 		})
@@ -96,7 +94,7 @@ func TestStatsManager_WriteStats(t *testing.T) {
 }
 
 func TestStatsManager_GetMap_ReturnsSnapshot(t *testing.T) {
-	mn := NewStatsManager(context.Background())
+	mn := NewStatsManager()
 	mn.WriteStats()
 
 	// Снимок №1

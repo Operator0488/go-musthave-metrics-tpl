@@ -12,7 +12,7 @@ import (
 func main() {
 	ctx := context.Background()
 	conf := config.NewAgentConfig()
-	if err := parseFlags(&conf.Port, &conf.ReportInterval, &conf.PollInterval); err != nil {
+	if err := parseFlags(&conf); err != nil {
 		log.Println(err)
 		return
 	}

@@ -62,6 +62,22 @@ func (m *MapsMock) IncrementValue(name string, value int64) error {
 	return nil
 }
 
-func (m *MapsMock) PrintAll() {
+// GetValueGauge -
+func (m *MapsMock) GetValueGauge(s string) (float64, error) {
 
+	return 0, models.ErrorNotDB
+}
+
+// GetValueCounter -
+func (m *MapsMock) GetValueCounter(s string) (int64, error) {
+
+	return 0, models.ErrorNotDB
+}
+
+// GetValues -
+func (m *MapsMock) GetValues() (map[string]any, error) {
+
+	storage := make(map[string]interface{})
+
+	return storage, nil
 }
