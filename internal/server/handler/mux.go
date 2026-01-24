@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/service"
@@ -42,6 +41,7 @@ func NewChiRoute(h Handler) http.Handler {
 	r.Route("/", func(r chi.Router) {
 
 		r.Use(logging)
+
 		r.Get("/", h.GetValues)
 
 		r.Route("/update", func(r chi.Router) {
@@ -145,17 +145,6 @@ func write(w http.ResponseWriter, data interface{}) {
 	w.WriteHeader(http.StatusOK)
 	if data != nil {
 		_, er := fmt.Fprint(w, data)
-		if er != nil {
-			panic(er)
-		}
-	}
-}
-
-func writeData(w http.ResponseWriter, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	if data != nil {
-		er := json.NewEncoder(w).Encode(data)
 		if er != nil {
 			panic(er)
 		}

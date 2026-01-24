@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/config"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/handler"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/logger"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/repository"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/service"
 	"log"
@@ -17,6 +18,10 @@ func main() {
 	if err := parseFlags(&conf); err != nil {
 		log.Println(err)
 		return
+	}
+
+	if err := logger.InitLogger("info"); err != nil {
+		panic(err)
 	}
 
 	if err := run(ctx, conf); err != nil {
