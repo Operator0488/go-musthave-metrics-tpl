@@ -1,11 +1,14 @@
 package handler
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/service"
 	"github.com/go-chi/chi/v5"
-	"log"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -16,6 +19,8 @@ type StorageHandler struct {
 
 type Handler interface {
 	PostUpdate(http.ResponseWriter, *http.Request)
+	PostUpdateWithBody(http.ResponseWriter, *http.Request)
+	PostValueWithBody(http.ResponseWriter, *http.Request)
 	GetValue(http.ResponseWriter, *http.Request)
 	GetValues(http.ResponseWriter, *http.Request)
 }
@@ -27,8 +32,8 @@ func NewRoute(h Handler) http.Handler {
 		"/update/{type}/{name}/{value}",
 		middleConveyor(
 			http.HandlerFunc(h.PostUpdate),
-			checkPost,
-			logging,
+			//checkPost,
+			//logging,
 		))
 
 	return mux
@@ -37,21 +42,20 @@ func NewRoute(h Handler) http.Handler {
 // NewChiRoute -
 func NewChiRoute(h Handler) http.Handler {
 	r := chi.NewRouter()
-
 	r.Route("/", func(r chi.Router) {
 
 		r.Use(logging)
-
 		r.Get("/", h.GetValues)
 
 		r.Route("/update", func(r chi.Router) {
+			r.Post("/", h.PostUpdateWithBody)
 			r.Post("/{type}/{name}/{value}", h.PostUpdate)
 		})
 
 		r.Route("/value", func(r chi.Router) {
+			r.Post("/", h.PostValueWithBody)
 			r.Get("/{type}/{name}", h.GetValue)
 		})
-
 	})
 
 	return r
@@ -79,17 +83,24 @@ func (s *StorageHandler) GetValue(w http.ResponseWriter, r *http.Request) {
 	}
 
 	req := models.GetValueRequest{
-		Type: t,
-		Name: n,
+		MType: t,
+		ID:    n,
 	}
 
-	str, err := s.service.SenderGetValue(&req)
+	str, err := s.service.SenderGetValue(req)
 	if err != nil {
 		errorStatusNotFound(w, fmt.Errorf("Ошибка: %v", err).Error())
 		return
 	}
 
-	write(w, str)
+	if str.Value != nil {
+		writeText(w, *str.Value)
+	}
+
+	if str.Delta != nil {
+		writeText(w, *str.Delta)
+	}
+
 }
 
 // GetValues -
@@ -100,51 +111,133 @@ func (s *StorageHandler) GetValues(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	write(w, data)
+	writeText(w, data)
 }
 
 // PostUpdate -
 func (s *StorageHandler) PostUpdate(w http.ResponseWriter, r *http.Request) {
-	req, err := postUpdateRequest(r.URL.Path)
-	if err != nil || req == nil {
-		log.Println(err)
+	req, err := postUpdateRequestAddr(r.URL.Path)
+	if err != nil {
 		errorBadRequest(w, err.Error())
 		return
 	}
 
 	err = s.service.SenderPostUpdate(req)
 	if err != nil {
-		log.Println(err)
+		errorBadRequest(w, err.Error())
+		return
+	}
+}
+
+func postUpdateRequestAddr(addr string) (models.PostUpdateRequest, error) {
+	shares := strings.Split(strings.Trim(addr, "/"), "/")
+	if len(shares) != 4 || shares[0] != "update" {
+		return models.PostUpdateRequest{}, fmt.Errorf("Ошибка: неправильный запрос, %v", addr)
+	}
+
+	if shares[1] != models.Gauge && shares[1] != models.Counter {
+		return models.PostUpdateRequest{}, fmt.Errorf("Ошибка: неправильный тип, %v", shares[1])
+	}
+
+	req := models.PostUpdateRequest{
+		MType:    shares[1],
+		ID:       shares[2],
+		ValueStr: shares[3],
+	}
+
+	return req, nil
+}
+
+func writeText(w http.ResponseWriter, data interface{}) {
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(http.StatusOK)
+	if data != nil {
+		_, er := fmt.Fprint(w, data)
+		if er != nil {
+			panic(er)
+		}
+	}
+}
+
+func (s *StorageHandler) PostUpdateWithBody(w http.ResponseWriter, r *http.Request) {
+	req, err := getUpdateRequestBody(r.Body)
+	if err != nil {
+		errorBadRequest(w, err.Error())
+		return
+	}
+
+	err = s.service.SenderPostUpdate(req)
+	if err != nil {
 		errorBadRequest(w, err.Error())
 		return
 	}
 
 }
 
-func postUpdateRequest(addr string) (*models.PostUpdateRequest, error) {
-	shares := strings.Split(strings.Trim(addr, "/"), "/")
-	if len(shares) != 4 || shares[0] != "update" {
-		return nil, fmt.Errorf("Ошибка: неправильный запрос, %v", addr)
+func getUpdateRequestBody(body io.ReadCloser) (models.PostUpdateRequest, error) {
+	var data bytes.Buffer
+	_, err := data.ReadFrom(body)
+	if err != nil {
+		return models.PostUpdateRequest{}, fmt.Errorf("Ошибка: %v", err)
 	}
 
-	if shares[1] != models.Gauge && shares[1] != models.Counter {
-		return nil, fmt.Errorf("Ошибка: неправильный тип, %v", shares[1])
+	var req models.PostUpdateRequest
+
+	err = json.Unmarshal(data.Bytes(), &req)
+	if err != nil {
+		return models.PostUpdateRequest{}, fmt.Errorf("Ошибка: %v", err)
 	}
 
-	req := models.PostUpdateRequest{
-		Type:  shares[1],
-		Name:  shares[2],
-		Value: shares[3],
-	}
-
-	return &req, nil
+	return req, nil
 }
 
-func write(w http.ResponseWriter, data interface{}) {
+func (s *StorageHandler) PostValueWithBody(w http.ResponseWriter, r *http.Request) {
+
+	req, err := getValueRequestBody(r.Body)
+	if err != nil {
+		errorBadRequest(w, err.Error())
+		return
+	}
+
+	res, err := s.service.SenderGetValue(req)
+	if err != nil {
+		errorStatusNotFound(w, fmt.Errorf("Ошибка: %v", err).Error())
+		return
+	}
+
+	writeJson(w, res)
+}
+
+func getValueRequestBody(body io.ReadCloser) (models.GetValueRequest, error) {
+	var data bytes.Buffer
+	_, err := data.ReadFrom(body)
+	if err != nil {
+		logger.Info("ошибка при чтении body",
+			logger.String("err", err.Error()))
+		return models.GetValueRequest{}, fmt.Errorf("Ошибка: %v", err)
+	}
+
+	var req models.GetValueRequest
+
+	err = json.Unmarshal(data.Bytes(), &req)
+	if err != nil {
+		logger.Info("ошибка при анмаршл",
+			logger.String("err", err.Error()))
+		return models.GetValueRequest{}, fmt.Errorf("Ошибка: %v", err)
+	}
+
+	return req, nil
+}
+
+func writeJson(w http.ResponseWriter, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	if data != nil {
-		_, er := fmt.Fprint(w, data)
+		b, er := json.Marshal(data)
+		if er != nil {
+			panic(er)
+		}
+		_, er = w.Write(b)
 		if er != nil {
 			panic(er)
 		}

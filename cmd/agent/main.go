@@ -5,6 +5,7 @@ import (
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/config"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/handler"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/service"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	"log"
 	"time"
 )
@@ -15,6 +16,10 @@ func main() {
 	if err := parseFlags(&conf); err != nil {
 		log.Println(err)
 		return
+	}
+
+	if err := logger.InitLogger("info"); err != nil {
+		panic(err)
 	}
 
 	if err := run(ctx, conf); len(err) != 0 {
@@ -37,12 +42,14 @@ func run(ctx context.Context, conf config.AgentConfig) []error {
 		case <-reportTicker.C:
 			err := client.SendRequest()
 			if len(err) != 0 {
-				return err
+				for _, er := range err {
+					logger.Info("Ошибка при отправке запроса",
+						logger.String("err", er.Error()))
+				}
 			}
 
 		case <-pollTicker.C:
 			mn.WriteStats()
-
 		}
 	}
 

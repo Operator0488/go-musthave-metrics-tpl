@@ -19,7 +19,6 @@ type Manager interface {
 
 // NewStatsManager -
 func NewStatsManager() *StatsManager {
-
 	var s = StatsManager{
 		m: NewMap(),
 	}
@@ -97,15 +96,15 @@ func (m *StatsManager) WriteStats() {
 	m.m[model.StackInuse].Value = float64(s.StackInuse)
 	m.m[model.StackSys].Value = float64(s.StackSys)
 	m.m[model.TotalAlloc].Value = float64(s.TotalAlloc)
-	m.m[model.PollCount].Value += 1
+	m.m[model.PollCount].Value = 1
 	m.m[model.RandomValue].Value = rand.Float64()
 	m.mu.Unlock()
 
 }
 
 func (m *StatsManager) GetMap() map[string]*model.Stat {
-	m.mu.RLock()
-	defer m.mu.RUnlock()
+	m.mu.Lock()
+	defer m.mu.Unlock()
 
 	cp := make(map[string]*model.Stat, len(m.m))
 	for k, v := range m.m {

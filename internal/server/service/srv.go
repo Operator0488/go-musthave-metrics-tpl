@@ -4,7 +4,6 @@ import (
 	"fmt"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/repository"
-	"log"
 	"strconv"
 )
 
@@ -13,8 +12,8 @@ type StorageService struct {
 }
 
 type Service interface {
-	SenderPostUpdate(req *models.PostUpdateRequest) error
-	SenderGetValue(req *models.GetValueRequest) (string, error)
+	SenderPostUpdate(req models.PostUpdateRequest) error
+	SenderGetValue(req models.GetValueRequest) (models.GetValueResponse, error)
 	SenderGetValues() (map[string]any, error)
 }
 
@@ -30,64 +29,72 @@ func (s *StorageService) SenderGetValues() (map[string]any, error) {
 }
 
 // SenderGetValue -
-func (s *StorageService) SenderGetValue(req *models.GetValueRequest) (string, error) {
-	switch req.Type {
+func (s *StorageService) SenderGetValue(req models.GetValueRequest) (models.GetValueResponse, error) {
+	res := models.GetValueResponse{
+		ID:    req.ID,
+		MType: req.MType,
+	}
+
+	switch req.MType {
 
 	case models.Gauge:
-		log.Println(req.Name)
-		num, err := s.storage.GetValueGauge(req.Name)
+		num, err := s.storage.GetValueGauge(req.ID)
 		if err != nil {
-			return "", err
+			return res, err
 		}
-		str := getStringFloat(num)
-		if str == "" {
-			return "", fmt.Errorf("Ошибка получения значения")
-		}
-		return str, nil
+		res.Value = &num
+		return res, nil
 
 	case models.Counter:
-		num, err := s.storage.GetValueCounter(req.Name)
+		num, err := s.storage.GetValueCounter(req.ID)
 		if err != nil {
-			return "", err
+			return res, err
 		}
-		str := getStringInt(num)
-		if str == "" {
-			return "", fmt.Errorf("Ошибка получения значения")
-		}
-		return str, nil
+		res.Delta = &num
+		return res, nil
 
 	default:
-		return "", fmt.Errorf("Ошибка, нет подходящего типа")
-
+		return res, fmt.Errorf("Ошибка, нет подходящего типа")
 	}
 }
 
 // SenderPostUpdate -
-func (s *StorageService) SenderPostUpdate(req *models.PostUpdateRequest) error {
+func (s *StorageService) SenderPostUpdate(req models.PostUpdateRequest) error {
 
-	switch req.Type {
+	switch req.MType {
 
 	case models.Gauge:
-		val, err := getValueFloat(req.Value)
-		if err != nil {
+		if req.ValueStr != "" && req.Value == nil {
+			val, err := getValueFloat(req.ValueStr)
+			if err != nil {
+				return err
+			}
+			req.Value = &val
+		}
+		if req.Value != nil {
+			err := s.storage.SaverValue(req.ID, *req.Value)
 			return err
 		}
-		err = s.storage.SaverValue(req.Name, val)
-		return err
+		return fmt.Errorf("Ошибка, странный запрос")
 
 	case models.Counter:
-		val, err := getValueInt(req.Value)
-		if err != nil {
+		if req.ValueStr != "" && req.Delta == nil {
+			val, err := getValueInt(req.ValueStr)
+			if err != nil {
+				return err
+			}
+			req.Delta = &val
+		}
+		if req.Delta != nil {
+			err := s.storage.IncrementValue(req.ID, *req.Delta)
 			return err
 		}
-		err = s.storage.IncrementValue(req.Name, val)
-		return err
+		return fmt.Errorf("Ошибка, странный запрос")
 
 	default:
 		return fmt.Errorf("Ошибка, нет подходящего типа")
 
 	}
-
 }
 
 func getValueFloat(str string) (float64, error) {
