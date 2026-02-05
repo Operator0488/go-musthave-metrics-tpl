@@ -4,7 +4,6 @@ import (
 	"fmt"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/repository"
-	"strconv"
 )
 
 type StorageService struct {
@@ -23,12 +22,10 @@ func NewStorageService(storage repository.MemStorage) *StorageService {
 	}
 }
 
-// SenderGetValues -
 func (s *StorageService) SenderGetValues() (map[string]any, error) {
 	return s.storage.GetValues()
 }
 
-// SenderGetValue -
 func (s *StorageService) SenderGetValue(req models.GetValueRequest) (models.GetValueResponse, error) {
 	res := models.GetValueResponse{
 		ID:    req.ID,
@@ -58,7 +55,6 @@ func (s *StorageService) SenderGetValue(req models.GetValueRequest) (models.GetV
 	}
 }
 
-// SenderPostUpdate -
 func (s *StorageService) SenderPostUpdate(req models.PostUpdateRequest) error {
 
 	switch req.MType {
@@ -95,20 +91,4 @@ func (s *StorageService) SenderPostUpdate(req models.PostUpdateRequest) error {
 		return fmt.Errorf("Ошибка, нет подходящего типа")
 
 	}
-}
-
-func getValueFloat(str string) (float64, error) {
-	return strconv.ParseFloat(str, 64)
-}
-
-func getValueInt(str string) (int64, error) {
-	return strconv.ParseInt(str, 10, 64)
-}
-
-func getStringFloat(f float64) string {
-	return strconv.FormatFloat(f, 'f', -1, 64)
-}
-
-func getStringInt(i int64) string {
-	return strconv.FormatInt(i, 10)
 }
