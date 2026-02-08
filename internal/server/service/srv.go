@@ -16,7 +16,7 @@ type Service interface {
 	SenderGetValues() (map[string]any, error)
 }
 
-func NewStorageService(storage repository.MemStorage) *StorageService {
+func NewStorageService(storage repository.MemStorage, interval int) *StorageService {
 	return &StorageService{
 		storage: storage,
 	}

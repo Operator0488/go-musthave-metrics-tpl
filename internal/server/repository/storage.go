@@ -1,7 +1,12 @@
 package repository
 
 import (
+	"encoding/json"
+	"errors"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
+	"io"
+	"os"
+	"path/filepath"
 	"sync"
 )
 
@@ -11,18 +16,56 @@ type MemStorage interface {
 	GetValueGauge(string) (float64, error)
 	GetValueCounter(string) (int64, error)
 	GetValues() (map[string]any, error)
+	SaveData(models.MetricStore) error
+	GetData() error
+	AddData(models.MetricStore) error
+	Snapshot() error
 }
 
 type Maps struct {
 	storage map[string]models.MetricStore
+	file    *os.File
 
-	mu sync.RWMutex
+	mu         sync.RWMutex
+	syncRecord bool
 }
 
-func NewMaps() *Maps {
-	return &Maps{
-		storage: make(map[string]models.MetricStore),
+func loadFile(path string) (*os.File, error) {
+	dir := filepath.Dir(path)
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return nil, err
 	}
+
+	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		return nil, err
+	}
+
+	return file, nil
+}
+
+func NewMaps(checkInit bool, path string, interval int) (*Maps, error) {
+	store := make(map[string]models.MetricStore)
+
+	file, err := loadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var maps = &Maps{
+		storage:    store,
+		file:       file,
+		syncRecord: interval == 0,
+	}
+
+	if checkInit {
+		err = maps.GetData()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return maps, nil
 }
 
 func (m *Maps) SaverValue(name string, value float64) error {
@@ -44,6 +87,11 @@ func (m *Maps) SaverValue(name string, value float64) error {
 
 	metric.ID = name
 	m.storage[name] = metric
+
+	if m.syncRecord {
+		err := m.SaveData(metric)
+		return err
+	}
 
 	return nil
 }
@@ -67,6 +115,11 @@ func (m *Maps) IncrementValue(name string, value int64) error {
 
 	metric.ID = name
 	m.storage[name] = metric
+
+	if m.syncRecord {
+		err := m.SaveData(metric)
+		return err
+	}
 
 	return nil
 }
@@ -111,4 +164,68 @@ func (m *Maps) GetValues() (map[string]any, error) {
 	}
 
 	return storage, nil
+}
+
+func (m *Maps) SaveData(request models.MetricStore) error {
+	enc := json.NewEncoder(m.file)
+	enc.SetIndent("", "\t")
+
+	err := enc.Encode(request)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Maps) GetData() error {
+	dec := json.NewDecoder(m.file)
+
+	for {
+		var ms models.MetricStore
+		err := dec.Decode(&ms)
+		if errors.Is(err, io.EOF) {
+			break
+		}
+		err = m.AddData(ms)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Maps) AddData(ms models.MetricStore) error {
+	if ms.MType == models.Gauge {
+		err := m.SaverValue(ms.ID, ms.Value)
+		if err != nil {
+			return err
+		}
+	}
+
+	if ms.MType == models.Counter {
+		err := m.IncrementValue(ms.ID, ms.Delta)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Maps) Snapshot() error {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	err := m.file.Truncate(0)
+	if err != nil {
+		return err
+	}
+	for _, v := range m.storage {
+		err := m.SaveData(v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

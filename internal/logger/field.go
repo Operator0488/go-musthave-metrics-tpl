@@ -18,3 +18,7 @@ func Duration(key string, val time.Duration) Field {
 func Int(key string, val int) Field {
 	return zap.Int(key, val)
 }
+
+func Error(val error) Field {
+	return zap.Error(val)
+}

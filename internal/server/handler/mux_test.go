@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"bytes"
 	"errors"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/service/mock"
 	"net/http"
 	"net/http/httptest"
@@ -11,14 +13,25 @@ import (
 func TestNewRoute(t *testing.T) {
 	svc := &mock.MockService{}
 	h := NewStorageHandler(svc)
+	router := NewChiRoute(h)
 
-	router := NewRoute(h)
+	if err := logger.InitLogger("info"); err != nil {
+		panic(err)
+	}
+
+	v := []byte(`{
+  "id": "PollCount4",
+  "type": "gauge",
+  "value": 1.0007
+	} `)
 
 	req := httptest.NewRequest(
 		http.MethodPost,
-		"/update/gauge/test/42",
-		nil,
+		"/update",
+		bytes.NewReader(v),
 	)
+	req.Header.Set("Content-Type", "application/json")
+
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -104,46 +117,47 @@ func Test_checkPost(t *testing.T) {
 	}
 }
 
-func Test_getUpdateRequest(t *testing.T) {
-	tests := []struct {
-		name    string
-		path    string
-		wantErr bool
-	}{
-		{
-			name:    "ok gauge",
-			path:    "/update/gauge/test/123",
-			wantErr: false,
-		},
-		{
-			name:    "wrong prefix",
-			path:    "/wrong/gauge/test/123",
-			wantErr: true,
-		},
-		{
-			name:    "wrong type",
-			path:    "/update/unknown/test/123",
-			wantErr: true,
-		},
-		{
-			name:    "not enough parts",
-			path:    "/update/gauge/test",
-			wantErr: true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			req, err := postUpdateRequest(tt.path)
-			if tt.wantErr && err == nil {
-				t.Fatal("expected error, got nil")
-			}
-			if !tt.wantErr && err != nil {
-				t.Fatalf("unexpected error: %v", err)
-			}
-			if !tt.wantErr && req == nil {
-				t.Fatal("request is nil")
-			}
-		})
-	}
-}
+//
+//func Test_getUpdateRequest(t *testing.T) {
+//	tests := []struct {
+//		name    string
+//		path    string
+//		wantErr bool
+//	}{
+//		{
+//			name:    "ok gauge",
+//			path:    "/update/gauge/test/123",
+//			wantErr: false,
+//		},
+//		{
+//			name:    "wrong prefix",
+//			path:    "/wrong/gauge/test/123",
+//			wantErr: true,
+//		},
+//		{
+//			name:    "wrong type",
+//			path:    "/update/unknown/test/123",
+//			wantErr: true,
+//		},
+//		{
+//			name:    "not enough parts",
+//			path:    "/update/gauge/test",
+//			wantErr: true,
+//		},
+//	}
+//
+//	for _, tt := range tests {
+//		t.Run(tt.name, func(t *testing.T) {
+//			req, err := postUpdateRequest(tt.path)
+//			if tt.wantErr && err == nil {
+//				t.Fatal("expected error, got nil")
+//			}
+//			if !tt.wantErr && err != nil {
+//				t.Fatalf("unexpected error: %v", err)
+//			}
+//			if !tt.wantErr && req == nil {
+//				t.Fatal("request is nil")
+//			}
+//		})
+//	}
+//}

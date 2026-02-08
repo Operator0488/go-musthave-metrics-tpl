@@ -27,7 +27,6 @@ func NewStatsManager() *StatsManager {
 	return &s
 }
 
-// NewMap -
 func NewMap() map[string]*model.Stat {
 	return map[string]*model.Stat{
 		model.GCCPUFraction: {"gauge", 0.0},
@@ -62,7 +61,6 @@ func NewMap() map[string]*model.Stat {
 	}
 }
 
-// WriteStats -
 func (m *StatsManager) WriteStats() {
 	var s runtime.MemStats
 	runtime.SetMutexProfileFraction(10)
