@@ -8,7 +8,6 @@ import (
 )
 
 func parseFlags(agent *config.AgentConfig) error {
-
 	_ = env.Parse(agent)
 
 	if agent.Port == "" {

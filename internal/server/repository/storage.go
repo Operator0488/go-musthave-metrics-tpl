@@ -3,11 +3,15 @@ package repository
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
+	"go.uber.org/zap"
 	"io"
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 )
 
 type MemStorage interface {
@@ -19,7 +23,7 @@ type MemStorage interface {
 	SaveData(models.MetricStore) error
 	GetData() error
 	AddData(models.MetricStore) error
-	Snapshot() error
+	snapshot(interval int)
 }
 
 type Maps struct {
@@ -28,6 +32,8 @@ type Maps struct {
 
 	mu         sync.RWMutex
 	syncRecord bool
+
+	log logger.Logger
 }
 
 func loadFile(path string) (*os.File, error) {
@@ -44,7 +50,7 @@ func loadFile(path string) (*os.File, error) {
 	return file, nil
 }
 
-func NewMaps(checkInit bool, path string, interval int) (*Maps, error) {
+func NewMaps(log logger.Logger, checkInit bool, path string, interval int) (*Maps, error) {
 	store := make(map[string]models.MetricStore)
 
 	file, err := loadFile(path)
@@ -56,6 +62,7 @@ func NewMaps(checkInit bool, path string, interval int) (*Maps, error) {
 		storage:    store,
 		file:       file,
 		syncRecord: interval == 0,
+		log:        log,
 	}
 
 	if checkInit {
@@ -64,6 +71,8 @@ func NewMaps(checkInit bool, path string, interval int) (*Maps, error) {
 			return nil, err
 		}
 	}
+
+	maps.snapshot(interval)
 
 	return maps, nil
 }
@@ -172,7 +181,7 @@ func (m *Maps) SaveData(request models.MetricStore) error {
 
 	err := enc.Encode(request)
 	if err != nil {
-		return err
+		return fmt.Errorf("ошибка сохранения models.MetricStore: %w", err)
 	}
 
 	return nil
@@ -214,18 +223,37 @@ func (m *Maps) AddData(ms models.MetricStore) error {
 	return nil
 }
 
-func (m *Maps) Snapshot() error {
-	m.mu.RLock()
-	defer m.mu.RUnlock()
-	err := m.file.Truncate(0)
-	if err != nil {
-		return err
+func (m *Maps) snapshot(interval int) {
+	if interval <= 0 {
+		return
 	}
-	for _, v := range m.storage {
-		err := m.SaveData(v)
-		if err != nil {
-			return err
+
+	tick := time.NewTicker(time.Duration(interval) * time.Second)
+
+	go func() {
+		defer tick.Stop()
+
+		for {
+
+			select {
+			case <-tick.C:
+				err := m.file.Truncate(0)
+				if err != nil {
+					m.log.Info("Ошибка очистки файла",
+						zap.Error(err))
+				}
+
+				m.mu.RLock()
+				for _, v := range m.storage {
+					err = m.SaveData(v)
+					if err != nil {
+						m.mu.RUnlock()
+						m.log.Info("Ошибка сохранения данных",
+							zap.Error(err))
+					}
+				}
+				m.mu.RUnlock()
+			}
 		}
-	}
-	return nil
+	}()
 }

@@ -7,8 +7,9 @@ import (
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/handler"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/repository"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/service"
+	"go.uber.org/zap"
+	"log"
 	"net/http"
-	"time"
 )
 
 func main() {
@@ -16,41 +17,41 @@ func main() {
 
 	conf := config.NewServerConfig()
 	if err := parseFlags(&conf); err != nil {
-		panic(err)
-	}
-
-	if err := logger.InitLogger("info"); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	if err := run(ctx, conf); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
 
 func run(ctx context.Context, conf config.ServerConfig) error {
-	str, err := repository.NewMaps(*conf.Restore, conf.FileStoragePath, *conf.StoreInterval)
+	l, err := logger.New("info")
 	if err != nil {
 		return err
 	}
-	srv := service.NewStorageService(str, *conf.StoreInterval)
-	mux := handler.NewStorageHandler(srv)
+
+	str, err := repository.NewMaps(
+		l.With(zap.String("component", "storage")),
+		*conf.Restore,
+		conf.FileStoragePath,
+		*conf.StoreInterval,
+	)
+	if err != nil {
+		return err
+	}
+
+	srv := service.NewStorageService(
+		l.With(zap.String("component", "service")),
+		str,
+	)
+
+	mux := handler.NewStorageHandler(
+		l.With(zap.String("component", "handler")),
+		srv,
+	)
+
 	rout := handler.NewChiRoute(mux)
-
-	go func() {
-		if *conf.StoreInterval > 0 {
-			tick := time.NewTicker(time.Duration(*conf.StoreInterval) * time.Second)
-			for {
-				select {
-				case <-tick.C:
-					err = str.Snapshot()
-					logger.Info("Не удалось сделать снэп",
-						logger.Error(err))
-				}
-			}
-
-		}
-	}()
 
 	if err = http.ListenAndServe(conf.Port, rout); err != nil {
 		return err

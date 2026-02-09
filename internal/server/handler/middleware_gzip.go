@@ -2,6 +2,8 @@ package handler
 
 import (
 	"compress/gzip"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
+	"go.uber.org/zap"
 	"io"
 	"net/http"
 	"strings"
@@ -17,31 +19,36 @@ type compressReader struct {
 	zr *gzip.Reader
 }
 
-func compressGzip(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		acceptEncoding := r.Header.Get("Accept-Encoding")
-		supportsGzip := strings.Contains(acceptEncoding, "gzip")
-		if !supportsGzip {
-			next.ServeHTTP(w, r)
-			return
-		}
+func compressGzip(log logger.Logger) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			acceptEncoding := r.Header.Get("Accept-Encoding")
+			supportsGzip := strings.Contains(acceptEncoding, "gzip")
+			if !supportsGzip {
+				next.ServeHTTP(w, r)
+				return
+			}
 
-		gz, err := gzip.NewWriterLevel(w, gzip.BestSpeed)
-		if err != nil {
-			errorBadRequest(w, "gzip не инициализировался")
-			return
-		}
-		defer gz.Close()
+			gz, err := gzip.NewWriterLevel(w, gzip.BestSpeed)
+			if err != nil {
+				log.Info("gzip не инициализировался",
+					zap.Error(err),
+				)
+				errorInternalServer(w)
+				return
+			}
+			defer gz.Close()
 
-		rw := compressWriter{
-			ResponseWriter: w,
-			Writer:         gz,
-		}
+			rw := compressWriter{
+				ResponseWriter: w,
+				Writer:         gz,
+			}
 
-		w.Header().Set("Content-Encoding", "gzip")
+			w.Header().Set("Content-Encoding", "gzip")
 
-		next.ServeHTTP(rw, r)
-	})
+			next.ServeHTTP(rw, r)
+		})
+	}
 }
 
 func (rw compressWriter) Write(b []byte) (int, error) {
@@ -49,31 +56,37 @@ func (rw compressWriter) Write(b []byte) (int, error) {
 	return n, err
 }
 
-func decompressGzip(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		contentEncoding := r.Header.Get("Content-Encoding")
-		supportsGzip := strings.Contains(contentEncoding, "gzip")
-		if !supportsGzip {
+func decompressGzip(log logger.Logger) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			contentEncoding := r.Header.Get("Content-Encoding")
+
+			supportsGzip := strings.Contains(contentEncoding, "gzip")
+			if !supportsGzip {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			gz, err := gzip.NewReader(r.Body)
+			if err != nil {
+				log.Info("gzip не распаковался",
+					zap.Error(err),
+				)
+				errorBadRequest(w, "gzip не распакован")
+				return
+			}
+
+			rw := compressReader{
+				r:  r.Body,
+				zr: gz,
+			}
+
+			r.Body = &rw
+			defer rw.Close()
+
 			next.ServeHTTP(w, r)
-			return
-		}
-
-		gz, err := gzip.NewReader(r.Body)
-		if err != nil {
-			errorBadRequest(w, "gzip не распакован")
-			return
-		}
-
-		rw := compressReader{
-			r:  r.Body,
-			zr: gz,
-		}
-
-		r.Body = &rw
-		defer rw.Close()
-
-		next.ServeHTTP(w, r)
-	})
+		})
+	}
 }
 
 func (c compressReader) Read(p []byte) (n int, err error) {

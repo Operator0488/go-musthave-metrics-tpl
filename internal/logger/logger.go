@@ -2,20 +2,20 @@ package logger
 
 import "go.uber.org/zap"
 
-var instance Logger
-
-type logger struct {
-	*zap.Logger
+type ZapLogger struct {
+	l *zap.Logger
 }
 
 type Logger interface {
-	Info(msg string, fields ...Field)
+	Info(msg string, fields ...zap.Field)
+	Error(msg string, fields ...zap.Field)
+	With(fields ...zap.Field) Logger
 }
 
-func InitLogger(lvl string) error {
+func New(lvl string) (*ZapLogger, error) {
 	level, err := zap.ParseAtomicLevel(lvl)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	cfg := zap.NewProductionConfig()
@@ -24,18 +24,22 @@ func InitLogger(lvl string) error {
 
 	zl, err := cfg.Build()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	instance = &logger{zl}
-
-	return nil
+	return &ZapLogger{l: zl}, nil
 }
 
-func Info(msg string, fields ...Field) {
-	instance.Info(msg, fields...)
+func (zl *ZapLogger) Info(msg string, fields ...zap.Field) {
+	zl.l.Info(msg, fields...)
 }
 
-func (log *logger) Info(msg string, fields ...Field) {
-	log.WithOptions().Info(msg, fields...)
+func (zl *ZapLogger) With(fields ...zap.Field) Logger {
+	return &ZapLogger{
+		zl.l.With(fields...),
+	}
+}
+
+func (zl *ZapLogger) Error(msg string, fields ...zap.Field) {
+	zl.l.Error(msg, fields...)
 }

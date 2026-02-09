@@ -4,13 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/config"
-	"github.com/caarlos0/env/v6"
-	"log"
+	"github.com/caarlos0/env/v11"
 	"strings"
 )
 
 func parseFlags(conf *config.ServerConfig) error {
-
 	_ = env.Parse(conf)
 
 	if conf.Port == "" {
@@ -33,8 +31,6 @@ func parseFlags(conf *config.ServerConfig) error {
 		flag.StringVar(&conf.FileStoragePath, "f", ".storage", "address and port to run server")
 		conf.FileStoragePath = strings.TrimSuffix(conf.FileStoragePath, "/")
 		conf.FileStoragePath += "/wall.txt"
-
-		log.Println(conf.FileStoragePath)
 	}
 
 	flag.Parse()

@@ -4,21 +4,29 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
+	"fmt"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	"github.com/go-resty/resty/v2"
+	"go.uber.org/zap"
 )
 
 func compressGzip(cli *resty.Client, req *resty.Request) error {
-	data, _ := json.Marshal(req.Body)
+	data, err := json.Marshal(req.Body)
+	if err != nil {
+		return fmt.Errorf("ошибка json.Marshal: %w", err)
+	}
 
 	var wr bytes.Buffer
 
 	wrr := gzip.NewWriter(&wr)
-	_, err := wrr.Write(data)
+	_, err = wrr.Write(data)
 	if err != nil {
-		return err
+		return fmt.Errorf("ошибка gzip.NewWriter.Write: %w", err)
 	}
-	wrr.Close()
+	err = wrr.Close()
+	if err != nil {
+		return fmt.Errorf("ошибка при закрытии writer: %w", err)
+	}
 
 	compressedBody := wr.Bytes()
 
@@ -30,17 +38,21 @@ func compressGzip(cli *resty.Client, req *resty.Request) error {
 	return nil
 }
 
-func loggingRequest(cli *resty.Client, req *resty.Request) error {
-	logger.Info("Отправка запроса",
-		logger.String("URL", req.URL))
-
-	return nil
+func loggingRequest(log logger.Logger) func(*resty.Client, *resty.Request) error {
+	return func(cli *resty.Client, req *resty.Request) error {
+		log.Info("Отправка запроса",
+			zap.String("url", req.URL),
+			zap.String("method", req.Method),
+		)
+		return nil
+	}
 }
-
-func loggingResponse(cli *resty.Client, res *resty.Response) error {
-	logger.Info("Отправлен запрос",
-		logger.Int("status code", res.StatusCode()),
-		logger.String("body response", string(res.Body())))
-
-	return nil
+func loggingResponse(log logger.Logger) func(*resty.Client, *resty.Response) error {
+	return func(cli *resty.Client, res *resty.Response) error {
+		log.Info("Получен ответ",
+			zap.Int("status", res.StatusCode()),
+			zap.ByteString("body", res.Body()),
+		)
+		return nil
+	}
 }

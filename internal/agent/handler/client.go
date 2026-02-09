@@ -5,37 +5,39 @@ import (
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/config"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/model"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/service"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	"github.com/go-resty/resty/v2"
+	"go.uber.org/zap"
 )
 
 type ClientResty struct {
 	cli  *resty.Client
 	mn   service.Manager
 	conf config.AgentConfig
+	log  logger.Logger
 }
 
 type Sender interface {
-	SendRequest() []error
+	SendRequest()
 }
 
-func NewClientResty(mn service.Manager, conf config.AgentConfig) *ClientResty {
+func NewClientResty(log logger.Logger, mn service.Manager, conf config.AgentConfig) *ClientResty {
 	cli := resty.New()
 
 	cli.
 		OnBeforeRequest(compressGzip).
-		OnBeforeRequest(loggingRequest).
-		OnAfterResponse(loggingResponse)
+		OnBeforeRequest(loggingRequest(log)).
+		OnAfterResponse(loggingResponse(log))
 
 	return &ClientResty{
 		cli:  cli,
 		mn:   mn,
 		conf: conf,
+		log:  log,
 	}
 }
 
-func (c *ClientResty) SendRequest() []error {
-	var errors []error
-
+func (c *ClientResty) SendRequest() {
 	m := c.mn.GetMap()
 
 	for k, v := range m {
@@ -57,9 +59,9 @@ func (c *ClientResty) SendRequest() []error {
 			Post(fmt.Sprintf("http://%s/update/", c.conf.Port))
 
 		if err != nil {
-			errors = append(errors, fmt.Errorf("Ошибка при отправке запроса: %v\n ", err, resp.StatusCode()))
+			c.log.Info("Ошибка при отправке запроса",
+				zap.Error(err),
+				zap.Int("status", resp.StatusCode()))
 		}
 	}
-
-	return errors
 }

@@ -2,12 +2,14 @@ package service
 
 import (
 	"fmt"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/repository"
 )
 
 type StorageService struct {
 	storage repository.MemStorage
+	log     logger.Logger
 }
 
 type Service interface {
@@ -16,9 +18,10 @@ type Service interface {
 	SenderGetValues() (map[string]any, error)
 }
 
-func NewStorageService(storage repository.MemStorage, interval int) *StorageService {
+func NewStorageService(log logger.Logger, storage repository.MemStorage) *StorageService {
 	return &StorageService{
 		storage: storage,
+		log:     log,
 	}
 }
 
