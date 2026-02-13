@@ -22,7 +22,7 @@ func parseFlags(agent *config.AgentConfig) error {
 	flag.Parse()
 
 	if len(flag.Args()) > 0 {
-		return fmt.Errorf("Ошибка, неизвестные флаги: %v", flag.Args())
+		return fmt.Errorf("ошибка, неизвестные флаги: %v", flag.Args())
 	}
 
 	return nil

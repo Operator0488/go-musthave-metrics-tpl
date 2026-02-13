@@ -11,7 +11,7 @@ import (
 func parseFlags(conf *config.ServerConfig) error {
 	err := env.Parse(conf)
 	if err != nil {
-		return fmt.Errorf("Ошибка, парсинга env: %w", err)
+		return fmt.Errorf("ошибка, парсинга env: %w", err)
 	}
 
 	if conf.Port == "" {
@@ -39,7 +39,7 @@ func parseFlags(conf *config.ServerConfig) error {
 	flag.Parse()
 
 	if len(flag.Args()) > 0 {
-		return fmt.Errorf("Ошибка, неизвестные флаги: %v", flag.Args())
+		return fmt.Errorf("ошибка, неизвестные флаги: %v", flag.Args())
 	}
 
 	return nil

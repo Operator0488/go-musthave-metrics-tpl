@@ -76,13 +76,13 @@ func NewStorageHandler(log logger.Logger, service service.Service) *StorageHandl
 func (s *StorageHandler) GetValue(w http.ResponseWriter, r *http.Request) {
 	t := chi.URLParam(r, "type")
 	if t != models.Gauge && t != models.Counter {
-		errorStatusNotFound(w, fmt.Errorf("Ошибка: неправильный тип, %v", t).Error())
+		errorStatusNotFound(w, fmt.Errorf("ошибка: неправильный тип, %v", t).Error())
 		return
 	}
 
 	n := chi.URLParam(r, "name")
 	if n == "" {
-		errorStatusNotFound(w, fmt.Errorf("Ошибка: не задано имя").Error())
+		errorStatusNotFound(w, fmt.Errorf("ошибка: не задано имя").Error())
 		return
 	}
 
@@ -93,7 +93,7 @@ func (s *StorageHandler) GetValue(w http.ResponseWriter, r *http.Request) {
 
 	str, err := s.service.SenderGetValue(req)
 	if err != nil {
-		errorStatusNotFound(w, fmt.Errorf("Ошибка: %w", err).Error())
+		errorStatusNotFound(w, fmt.Errorf("ошибка: %w", err).Error())
 		return
 	}
 
@@ -119,7 +119,7 @@ func (s *StorageHandler) GetValue(w http.ResponseWriter, r *http.Request) {
 func (s *StorageHandler) GetValues(w http.ResponseWriter, r *http.Request) {
 	data, err := s.service.SenderGetValues()
 	if err != nil {
-		errorStatusNotFound(w, fmt.Errorf("Ошибка: %v", err).Error())
+		errorStatusNotFound(w, fmt.Errorf("ошибка: %v", err).Error())
 		return
 	}
 
@@ -128,7 +128,7 @@ func (s *StorageHandler) GetValues(w http.ResponseWriter, r *http.Request) {
 	if data != nil {
 		_, err = fmt.Fprint(w, data)
 		if err != nil {
-			s.log.Info("Ошибка записи в ResponseWriter",
+			s.log.Info("ошибка записи в ResponseWriter",
 				zap.Error(err))
 		}
 	}
@@ -137,11 +137,11 @@ func (s *StorageHandler) GetValues(w http.ResponseWriter, r *http.Request) {
 func (s *StorageHandler) PostUpdate(w http.ResponseWriter, r *http.Request) {
 	shares := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
 	if len(shares) != 4 || shares[0] != "update" {
-		errorBadRequest(w, fmt.Errorf("Ошибка: неправильный запрос, %v", r.URL.Path).Error())
+		errorBadRequest(w, fmt.Errorf("ошибка: неправильный запрос, %v", r.URL.Path).Error())
 	}
 
 	if shares[1] != models.Gauge && shares[1] != models.Counter {
-		errorBadRequest(w, fmt.Errorf("Ошибка: неправильный тип, %v", shares[1]).Error())
+		errorBadRequest(w, fmt.Errorf("ошибка: неправильный тип, %v", shares[1]).Error())
 	}
 
 	req := models.PostUpdateRequest{
@@ -165,7 +165,7 @@ func (s *StorageHandler) PostUpdateWithBody(w http.ResponseWriter, r *http.Reque
 	if err != nil {
 		s.log.Info("ошибка при чтении body",
 			zap.String("err", err.Error()))
-		errorBadRequest(w, fmt.Errorf("Ошибка: %w", err).Error())
+		errorBadRequest(w, fmt.Errorf("ошибка: %w", err).Error())
 		return
 	}
 
@@ -174,7 +174,7 @@ func (s *StorageHandler) PostUpdateWithBody(w http.ResponseWriter, r *http.Reque
 	if err != nil {
 		s.log.Info("ошибка при unmarshal",
 			zap.String("err", err.Error()))
-		errorBadRequest(w, fmt.Errorf("Ошибка: %w", err).Error())
+		errorBadRequest(w, fmt.Errorf("ошибка: %w", err).Error())
 		return
 	}
 
@@ -194,7 +194,7 @@ func (s *StorageHandler) PostValueWithBody(w http.ResponseWriter, r *http.Reques
 		s.log.Info("ошибка при чтении body",
 			zap.String("err", err.Error()),
 		)
-		errorBadRequest(w, fmt.Errorf("Ошибка: %w", err).Error())
+		errorBadRequest(w, fmt.Errorf("ошибка: %w", err).Error())
 		return
 	}
 
@@ -204,13 +204,13 @@ func (s *StorageHandler) PostValueWithBody(w http.ResponseWriter, r *http.Reques
 		s.log.Info("ошибка при unmarshal",
 			zap.String("err", err.Error()),
 		)
-		errorBadRequest(w, fmt.Errorf("Ошибка: %w", err).Error())
+		errorBadRequest(w, fmt.Errorf("ошибка: %w", err).Error())
 		return
 	}
 
 	res, err := s.service.SenderGetValue(req)
 	if err != nil {
-		errorStatusNotFound(w, fmt.Errorf("Ошибка: %v", err).Error())
+		errorStatusNotFound(w, fmt.Errorf("ошибка: %v", err).Error())
 		return
 	}
 
@@ -218,7 +218,7 @@ func (s *StorageHandler) PostValueWithBody(w http.ResponseWriter, r *http.Reques
 
 	b, err := json.Marshal(res)
 	if err != nil {
-		s.log.Info("Ошибка при Marshal",
+		s.log.Info("ошибка при Marshal",
 			zap.Error(err),
 		)
 		errorInternalServer(w)

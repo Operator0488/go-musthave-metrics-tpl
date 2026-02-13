@@ -55,7 +55,7 @@ func (s *StorageService) SenderGetValue(req models.GetValueRequest) (models.GetV
 		return res, nil
 
 	default:
-		return res, fmt.Errorf("Ошибка, нет подходящего типа")
+		return res, fmt.Errorf("ошибка, нет подходящего типа")
 	}
 }
 
@@ -75,7 +75,7 @@ func (s *StorageService) SenderPostUpdate(req models.PostUpdateRequest) error {
 			err := s.storage.SaverValue(req.ID, *req.Value)
 			return err
 		}
-		return fmt.Errorf("Ошибка, странный запрос")
+		return fmt.Errorf("ошибка, странный запрос")
 
 	case models.Counter:
 		if req.ValueStr != "" && req.Delta == nil {
@@ -89,10 +89,10 @@ func (s *StorageService) SenderPostUpdate(req models.PostUpdateRequest) error {
 			err := s.storage.IncrementValue(req.ID, *req.Delta)
 			return err
 		}
-		return fmt.Errorf("Ошибка, странный запрос")
+		return fmt.Errorf("ошибка, странный запрос")
 
 	default:
-		return fmt.Errorf("Ошибка, нет подходящего типа")
+		return fmt.Errorf("ошибка, нет подходящего типа")
 
 	}
 }

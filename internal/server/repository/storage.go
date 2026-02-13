@@ -39,12 +39,12 @@ type Maps struct {
 func loadFile(path string) (*os.File, error) {
 	dir := filepath.Dir(path)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
-		return nil, fmt.Errorf("Ошибка создания директории: %w", err)
+		return nil, fmt.Errorf("ошибка создания директории: %w", err)
 	}
 
 	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-		return nil, fmt.Errorf("Ошибка создания файла: %w", err)
+		return nil, fmt.Errorf("ошибка создания файла: %w", err)
 	}
 
 	return file, nil
@@ -55,7 +55,7 @@ func NewMaps(log logger.Logger, checkInit bool, path string, interval int) (*Map
 
 	file, err := loadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("Ошибка загрузки файла: %w", err)
+		return nil, fmt.Errorf("ошибка загрузки файла: %w", err)
 	}
 
 	var maps = &Maps{
@@ -68,7 +68,7 @@ func NewMaps(log logger.Logger, checkInit bool, path string, interval int) (*Map
 	if checkInit {
 		err = maps.GetData()
 		if err != nil {
-			return nil, fmt.Errorf("Ошибка получения данных: %w", err)
+			return nil, fmt.Errorf("ошибка получения данных: %w", err)
 		}
 	}
 
@@ -210,11 +210,11 @@ func (m *Maps) GetData() error {
 			break
 		}
 		if err != nil {
-			return fmt.Errorf("Ошибка получения данных: %w", err)
+			return fmt.Errorf("ошибка получения данных: %w", err)
 		}
 		err = m.AddData(ms)
 		if err != nil {
-			return fmt.Errorf("Ошибка добавление данных в storage: %w", err)
+			return fmt.Errorf("ошибка добавление данных в storage: %w", err)
 		}
 	}
 
