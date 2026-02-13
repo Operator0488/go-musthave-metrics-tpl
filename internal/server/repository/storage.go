@@ -249,31 +249,28 @@ func (m *Maps) snapshot(interval int) {
 	go func() {
 		defer tick.Stop()
 
-		for {
+		for range tick.C {
 
-			select {
-			case <-tick.C:
-				m.muFile.Lock()
-				err := m.file.Truncate(0)
-				if err != nil {
-					m.muFile.Unlock()
-					m.log.Info("Ошибка очистки файла",
-						zap.Error(err))
-					break
-				}
+			m.muFile.Lock()
+			err := m.file.Truncate(0)
+			if err != nil {
 				m.muFile.Unlock()
-
-				m.mu.RLock()
-				for _, v := range m.storage {
-					err = m.saveData(v)
-					if err != nil {
-						m.mu.RUnlock()
-						m.log.Info("Ошибка сохранения данных",
-							zap.Error(err))
-					}
-				}
-				m.mu.RUnlock()
+				m.log.Info("ошибка очистки файла",
+					zap.Error(err))
+				break
 			}
+			m.muFile.Unlock()
+
+			m.mu.RLock()
+			for _, v := range m.storage {
+				err = m.saveData(v)
+				if err != nil {
+					m.mu.RUnlock()
+					m.log.Info("ошибка сохранения данных",
+						zap.Error(err))
+				}
+			}
+			m.mu.RUnlock()
 		}
 	}()
 }
