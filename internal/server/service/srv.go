@@ -12,6 +12,7 @@ type StorageService struct {
 	log     logger.Logger
 }
 
+//go:generate mockgen -source=srv.go -destination=./mocks/mock_srv.go -package=mocks
 type Service interface {
 	SenderPostUpdate(req models.PostUpdateRequest) error
 	SenderGetValue(req models.GetValueRequest) (models.GetValueResponse, error)

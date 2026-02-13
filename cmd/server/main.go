@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/config"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/handler"
@@ -28,7 +29,7 @@ func main() {
 func run(ctx context.Context, conf config.ServerConfig) error {
 	l, err := logger.New("info")
 	if err != nil {
-		return err
+		return fmt.Errorf("ошибка инициализации логгера: %w", err)
 	}
 
 	str, err := repository.NewMaps(
@@ -37,8 +38,9 @@ func run(ctx context.Context, conf config.ServerConfig) error {
 		conf.FileStoragePath,
 		*conf.StoreInterval,
 	)
+
 	if err != nil {
-		return err
+		return fmt.Errorf("ошибка инициализации сервера: %w", err)
 	}
 
 	srv := service.NewStorageService(
@@ -54,8 +56,7 @@ func run(ctx context.Context, conf config.ServerConfig) error {
 	rout := handler.NewChiRoute(mux)
 
 	if err = http.ListenAndServe(conf.Port, rout); err != nil {
-		return err
+		return fmt.Errorf("ошибка запуска http-сервера: %w", err)
 	}
-
 	return nil
 }

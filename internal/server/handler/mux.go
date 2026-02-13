@@ -18,6 +18,7 @@ type StorageHandler struct {
 	log     logger.Logger
 }
 
+//go:generate mockgen -source=mux.go -destination=./mocks/mock_srv.go -package=mocks
 type Handler interface {
 	PostUpdate(http.ResponseWriter, *http.Request)
 	PostUpdateWithBody(http.ResponseWriter, *http.Request)
@@ -33,8 +34,7 @@ func NewRoute(h Handler) http.Handler {
 		"/update/{type}/{name}/{value}",
 		middleConveyor(
 			http.HandlerFunc(h.PostUpdate),
-			//checkPost,
-			//logging,
+			checkPost,
 		))
 
 	return mux

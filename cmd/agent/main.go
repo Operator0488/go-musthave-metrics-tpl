@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/config"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/handler"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/service"
@@ -24,14 +25,13 @@ func main() {
 }
 
 func run(ctx context.Context, conf config.AgentConfig) error {
+
 	l, err := logger.New("info")
 	if err != nil {
-		return err
+		return fmt.Errorf("ошибка инициализации логгера: %w", err)
 	}
 
-	mn := service.NewStatsManager(
-		l.With(zap.String("component", "stats manager")),
-	)
+	mn := service.NewStatsManager()
 
 	client := handler.NewClientResty(
 		l.With(zap.String("component", "client")),

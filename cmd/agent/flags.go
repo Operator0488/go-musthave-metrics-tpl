@@ -14,10 +14,10 @@ func parseFlags(agent *config.AgentConfig) error {
 		flag.StringVar(&agent.Port, "a", "localhost:8080", "address and port to run server")
 	}
 	if agent.PollInterval == 0 {
-		flag.IntVar(&agent.PollInterval, "p", 1, "report interval")
+		flag.IntVar(&agent.PollInterval, "p", 2, "report interval")
 	}
 	if agent.ReportInterval == 0 {
-		flag.IntVar(&agent.ReportInterval, "r", 2, "report interval")
+		flag.IntVar(&agent.ReportInterval, "r", 10, "report interval")
 	}
 	flag.Parse()
 

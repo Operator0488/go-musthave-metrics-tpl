@@ -24,7 +24,8 @@ vendor/
 .idea
 .vscode
 
-cmd/.DS_Store
+.DS_Store
+**/.DS_Store
 
 file.txt
 cover.out

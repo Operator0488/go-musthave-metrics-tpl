@@ -17,6 +17,7 @@ type ClientResty struct {
 	log  logger.Logger
 }
 
+//go:generate mockgen -source=client.go -destination=./mocks/mock_client.go -package=mocks
 type Sender interface {
 	SendRequest()
 }
@@ -59,9 +60,13 @@ func (c *ClientResty) SendRequest() {
 			Post(fmt.Sprintf("http://%s/update/", c.conf.Port))
 
 		if err != nil {
+			status := 0
+			if resp != nil {
+				status = resp.StatusCode()
+			}
 			c.log.Info("Ошибка при отправке запроса",
 				zap.Error(err),
-				zap.Int("status", resp.StatusCode()))
+				zap.Int("status", status))
 		}
 	}
 }

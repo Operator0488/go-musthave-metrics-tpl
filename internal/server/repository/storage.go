@@ -14,16 +14,15 @@ import (
 	"time"
 )
 
+//go:generate mockgen -source=storage.go -destination=./mocks/mock_storage.go -package=mocks
 type MemStorage interface {
 	SaverValue(string, float64) error
 	IncrementValue(string, int64) error
 	GetValueGauge(string) (float64, error)
 	GetValueCounter(string) (int64, error)
 	GetValues() (map[string]any, error)
-	SaveData(models.MetricStore) error
 	GetData() error
 	AddData(models.MetricStore) error
-	snapshot(interval int)
 }
 
 type Maps struct {
@@ -31,6 +30,7 @@ type Maps struct {
 	file    *os.File
 
 	mu         sync.RWMutex
+	muFile     sync.RWMutex
 	syncRecord bool
 
 	log logger.Logger
@@ -39,12 +39,12 @@ type Maps struct {
 func loadFile(path string) (*os.File, error) {
 	dir := filepath.Dir(path)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Ошибка создания директории: %w", err)
 	}
 
 	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Ошибка создания файла: %w", err)
 	}
 
 	return file, nil
@@ -55,7 +55,7 @@ func NewMaps(log logger.Logger, checkInit bool, path string, interval int) (*Map
 
 	file, err := loadFile(path)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Ошибка загрузки файла: %w", err)
 	}
 
 	var maps = &Maps{
@@ -68,7 +68,7 @@ func NewMaps(log logger.Logger, checkInit bool, path string, interval int) (*Map
 	if checkInit {
 		err = maps.GetData()
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Ошибка получения данных: %w", err)
 		}
 	}
 
@@ -87,6 +87,10 @@ func (m *Maps) SaverValue(name string, value float64) error {
 		}
 		metric.Value = value
 		m.storage[name] = metric
+		if m.syncRecord {
+			err := m.saveData(metric)
+			return err
+		}
 		return nil
 	}
 
@@ -98,7 +102,7 @@ func (m *Maps) SaverValue(name string, value float64) error {
 	m.storage[name] = metric
 
 	if m.syncRecord {
-		err := m.SaveData(metric)
+		err := m.saveData(metric)
 		return err
 	}
 
@@ -113,8 +117,14 @@ func (m *Maps) IncrementValue(name string, value int64) error {
 		if metric.MType != models.Counter {
 			return models.ErrorGetValue
 		}
+
 		metric.Delta += value
 		m.storage[name] = metric
+		if m.syncRecord {
+			metric.Delta = value
+			err := m.saveData(metric)
+			return err
+		}
 		return nil
 	}
 
@@ -126,7 +136,7 @@ func (m *Maps) IncrementValue(name string, value int64) error {
 	m.storage[name] = metric
 
 	if m.syncRecord {
-		err := m.SaveData(metric)
+		err := m.saveData(metric)
 		return err
 	}
 
@@ -175,7 +185,10 @@ func (m *Maps) GetValues() (map[string]any, error) {
 	return storage, nil
 }
 
-func (m *Maps) SaveData(request models.MetricStore) error {
+func (m *Maps) saveData(request models.MetricStore) error {
+	m.muFile.Lock()
+	defer m.muFile.Unlock()
+
 	enc := json.NewEncoder(m.file)
 	enc.SetIndent("", "\t")
 
@@ -196,9 +209,12 @@ func (m *Maps) GetData() error {
 		if errors.Is(err, io.EOF) {
 			break
 		}
+		if err != nil {
+			return fmt.Errorf("Ошибка получения данных: %w", err)
+		}
 		err = m.AddData(ms)
 		if err != nil {
-			return err
+			return fmt.Errorf("Ошибка добавление данных в storage: %w", err)
 		}
 	}
 
@@ -237,15 +253,19 @@ func (m *Maps) snapshot(interval int) {
 
 			select {
 			case <-tick.C:
+				m.muFile.Lock()
 				err := m.file.Truncate(0)
 				if err != nil {
+					m.muFile.Unlock()
 					m.log.Info("Ошибка очистки файла",
 						zap.Error(err))
+					break
 				}
+				m.muFile.Unlock()
 
 				m.mu.RLock()
 				for _, v := range m.storage {
-					err = m.SaveData(v)
+					err = m.saveData(v)
 					if err != nil {
 						m.mu.RUnlock()
 						m.log.Info("Ошибка сохранения данных",

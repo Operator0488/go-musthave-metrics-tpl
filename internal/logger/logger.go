@@ -1,11 +1,15 @@
 package logger
 
-import "go.uber.org/zap"
+import (
+	"fmt"
+	"go.uber.org/zap"
+)
 
 type ZapLogger struct {
 	l *zap.Logger
 }
 
+//go:generate mockgen -source=logger.go -destination=./mocks/mock_logger.go -package=mocks
 type Logger interface {
 	Info(msg string, fields ...zap.Field)
 	Error(msg string, fields ...zap.Field)
@@ -15,7 +19,7 @@ type Logger interface {
 func New(lvl string) (*ZapLogger, error) {
 	level, err := zap.ParseAtomicLevel(lvl)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ошибка создания логгера: %w", err)
 	}
 
 	cfg := zap.NewProductionConfig()
@@ -24,7 +28,7 @@ func New(lvl string) (*ZapLogger, error) {
 
 	zl, err := cfg.Build()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ошибка создания логгера: %w", err)
 	}
 
 	return &ZapLogger{l: zl}, nil

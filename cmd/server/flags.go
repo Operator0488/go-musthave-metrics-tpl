@@ -9,7 +9,10 @@ import (
 )
 
 func parseFlags(conf *config.ServerConfig) error {
-	_ = env.Parse(conf)
+	err := env.Parse(conf)
+	if err != nil {
+		return fmt.Errorf("Ошибка, парсинга env: %w", err)
+	}
 
 	if conf.Port == "" {
 		flag.StringVar(&conf.Port, "a", "localhost:8080", "address and port to run server")

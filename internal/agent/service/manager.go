@@ -2,28 +2,26 @@ package service
 
 import (
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/model"
-	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	"math/rand/v2"
 	"runtime"
 	"sync"
 )
 
 type StatsManager struct {
-	m   map[string]*model.Stat
-	mu  sync.RWMutex
-	log logger.Logger
+	m  map[string]*model.Stat
+	mu sync.RWMutex
 }
 
+//go:generate mockgen -source=manager.go -destination=./mocks/mock_manager.go -package=mocks
 type Manager interface {
 	WriteStats()
 	GetMap() map[string]*model.Stat
 }
 
 // NewStatsManager -
-func NewStatsManager(log logger.Logger) *StatsManager {
+func NewStatsManager() *StatsManager {
 	var s = StatsManager{
-		m:   NewMap(),
-		log: log,
+		m: NewMap(),
 	}
 	s.WriteStats()
 

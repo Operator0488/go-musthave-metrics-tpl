@@ -1,0 +1,648 @@
+./metricstest-darwin-arm64 -test.v -test.run=^TestIteration7\
+    	-agent-binary-path=cmd/agent/agent \
+        -binary-path=cmd/server/server \
+      	-server-port=8080 \
+        -source-path=.
+=== RUN   TestIteration7
+=== RUN   TestIteration7/TestCollectAgentMetrics
+    iteration7_test.go:433: get gauge: "MSpanSys", value: 97920.000000
+    iteration7_test.go:433: get gauge: "NextGC", value: 4194304.000000
+    iteration7_test.go:433: get gauge: "NumForcedGC", value: 0.000000
+    iteration7_test.go:433: get gauge: "NumGC", value: 9.000000
+    iteration7_test.go:433: get gauge: "OtherSys", value: 1187847.000000
+    iteration7_test.go:433: get gauge: "PauseTotalNs", value: 357414.000000
+    iteration7_test.go:433: get gauge: "StackInuse", value: 425984.000000
+    iteration7_test.go:433: get gauge: "StackSys", value: 425984.000000
+    iteration7_test.go:433: get gauge: "Sys", value: 13518088.000000
+    iteration7_test.go:433: get gauge: "BuckHashSys", value: 1443793.000000
+    iteration7_test.go:433: get gauge: "GCCPUFraction", value: 0.000322
+    iteration7_test.go:433: get gauge: "GCSys", value: 2384216.000000
+    iteration7_test.go:433: get gauge: "HeapReleased", value: 2809856.000000
+    iteration7_test.go:433: get gauge: "HeapSys", value: 7897088.000000
+    iteration7_test.go:433: get gauge: "LastGC", value: 1770825019110223872.000000
+    iteration7_test.go:433: get gauge: "Lookups", value: 0.000000
+    iteration7_test.go:433: get gauge: "MCacheInuse", value: 9664.000000
+    iteration7_test.go:433: get gauge: "MCacheSys", value: 15704.000000
+    iteration7_test.go:433: get gauge: "MSpanInuse", value: 113920.000000
+    iteration7_test.go:433: get gauge: "Mallocs", value: 10619.000000
+    iteration7_test.go:433: get gauge: "TotalAlloc", value: 51966808.000000
+    iteration7_test.go:440: get counter: "PollCount", value: 2
+    iteration7_test.go:433: get gauge: "RandomValue", value: 0.036237
+    iteration7_test.go:433: get gauge: "Alloc", value: 1837608.000000
+    iteration7_test.go:433: get gauge: "Frees", value: 9561.000000
+    iteration7_test.go:433: get gauge: "HeapAlloc", value: 1837608.000000
+    iteration7_test.go:433: get gauge: "HeapIdle", value: 5005312.000000
+    iteration7_test.go:433: get gauge: "HeapInuse", value: 3833856.000000
+    iteration7_test.go:433: get gauge: "HeapObjects", value: 1184.000000
+=== RUN   TestIteration7/TestCollectAgentMetrics/counter/PollCount
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/RandomValue
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/Alloc
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/BuckHashSys
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/Frees
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/GCCPUFraction
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/GCSys
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/HeapAlloc
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/HeapIdle
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/HeapInuse
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/HeapObjects
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/HeapReleased
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/HeapSys
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/LastGC
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/Lookups
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/MCacheInuse
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/MCacheSys
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/MSpanInuse
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/MSpanSys
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/Mallocs
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/NextGC
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/NumForcedGC
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/NumGC
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/OtherSys
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/PauseTotalNs
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/StackInuse
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/StackSys
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/Sys
+=== RUN   TestIteration7/TestCollectAgentMetrics/gauge/TotalAlloc
+=== RUN   TestIteration7/TestCounterHandlers
+=== RUN   TestIteration7/TestCounterHandlers/update
+=== RUN   TestIteration7/TestEncoderUsage
+=== RUN   TestIteration7/TestGaugeHandlers
+=== RUN   TestIteration7/TestGaugeHandlers/update
+=== NAME  TestIteration7
+    iteration7_test.go:163: Получен STDOUT лог процесса:
+        
+        {"level":"info","ts":1770825017.085139,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.092972,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": EOF","status":0}
+        {"level":"info","ts":1770825017.093235,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.0942342,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.0945,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.09525,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.096566,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.097282,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.097378,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.0979252,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.0980322,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.098558,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.098905,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.099446,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.099526,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.1000059,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.100076,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.100537,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.100917,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.101454,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.1015291,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.1020212,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.102087,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.10255,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.1029701,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.103456,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.103518,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.103997,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.104057,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.104516,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.10495,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.1054661,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.10552,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.105949,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.106003,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.106401,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.106805,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.107211,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.10727,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.107666,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.107722,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.108129,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.10849,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.108927,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.1089768,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.1093838,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.1094341,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.109828,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.110143,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.110551,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.1105988,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.111019,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.111068,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.111475,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.111744,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.112145,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825017.112192,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825017.112684,"caller":"logger/logger.go:37","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1770825019.083814,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.088017,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.088675,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.089705,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.089868,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.090822,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.0909839,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.091855,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.0921059,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.092958,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.093034,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.093513,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.09377,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.094411,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.094492,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.095236,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.095448,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.096333,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.0963998,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.09671,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.096894,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.097773,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.097839,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.09835,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.098799,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.0991502,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.099212,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.1000059,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.100186,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.101119,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.101179,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.102006,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.102249,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.102752,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.102803,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.103486,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.103657,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.1040041,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.104053,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.104644,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.104845,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.10524,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.10529,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.106208,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.106455,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.107044,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.107094,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.10735,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.107506,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.108253,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.108308,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.108555,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.108734,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.1094341,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.1094851,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.109924,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825019.110076,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825019.110703,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.083869,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.084859,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.085242,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.0865338,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.086684,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.087082,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.087305,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.088088,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.088159,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.0884101,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.088573,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.090029,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.0901551,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.0905879,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.090917,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.0918038,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.091873,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.092166,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.0923579,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.093311,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.093384,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.093684,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.093898,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.094785,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.0948522,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.095127,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.0954309,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.0963001,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.0963688,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.096682,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.09693,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.0976698,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.097736,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.098072,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.09831,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.09916,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.099227,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.099749,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.0999649,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.10054,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.1006021,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.101387,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.101699,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.102647,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.102698,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.1030772,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.103317,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.10372,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.103776,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.104314,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.104565,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.105173,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.105223,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.105456,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.1056058,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.106266,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825021.1063192,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825021.10673,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.084791,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.08621,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.0863218,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.086709,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.086947,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.087808,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.087879,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.0882251,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.088471,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.089174,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.089233,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.089452,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.089709,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.090709,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.090852,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.091398,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.091713,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.0926661,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.092756,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.093076,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.093302,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.0942788,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.094351,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.094671,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.0948732,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.0957482,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.095823,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.096132,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.096336,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.097405,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.097484,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.097787,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.098062,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.099157,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.099225,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.099544,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.099735,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.100509,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.100578,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.100874,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.1010618,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.1019049,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.1019578,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.1021812,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.102327,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.102881,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.102936,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.103175,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.103322,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.1040819,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.104128,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.104364,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.104624,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.1053782,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.1054301,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.105688,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1770825023.105848,"caller":"logger/logger.go:37","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1770825023.1067169,"caller":"logger/logger.go:37","msg":"Получен ответ","component":"client","status":200,"body":""}
+    iteration7_test.go:132: Получен STDOUT лог процесса:
+        
+        {"level":"info","ts":1770825017.308015,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000723583}
+        {"level":"info","ts":1770825017.308597,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825017.411419,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000398083}
+        {"level":"info","ts":1770825017.411499,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825017.514435,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.001480958}
+        {"level":"info","ts":1770825017.514496,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825017.616802,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.0002975}
+        {"level":"info","ts":1770825017.616888,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825017.719641,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000958625}
+        {"level":"info","ts":1770825017.719685,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825017.820811,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000112416}
+        {"level":"info","ts":1770825017.820841,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825017.923549,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.001028667}
+        {"level":"info","ts":1770825017.923638,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825018.02541,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000098375}
+        {"level":"info","ts":1770825018.025449,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825018.1283321,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000909042}
+        {"level":"info","ts":1770825018.12841,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825018.232269,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.00025325}
+        {"level":"info","ts":1770825018.232393,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825018.3342779,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.00058225}
+        {"level":"info","ts":1770825018.334362,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825018.4367108,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000253208}
+        {"level":"info","ts":1770825018.436809,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825018.5397491,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000862375}
+        {"level":"info","ts":1770825018.539837,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825018.6418319,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000232542}
+        {"level":"info","ts":1770825018.641938,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825018.7442088,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000483416}
+        {"level":"info","ts":1770825018.744246,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825018.846354,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.00024675}
+        {"level":"info","ts":1770825018.846453,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825018.9493551,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000870333}
+        {"level":"info","ts":1770825018.949454,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825019.051806,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000237333}
+        {"level":"info","ts":1770825019.051906,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825019.0876732,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.001451916}
+        {"level":"info","ts":1770825019.087727,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.089365,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000241166}
+        {"level":"info","ts":1770825019.089438,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.090518,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.00042175}
+        {"level":"info","ts":1770825019.090699,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.091383,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000169417}
+        {"level":"info","ts":1770825019.09141,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.092823,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000254625}
+        {"level":"info","ts":1770825019.092853,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.093376,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000115833}
+        {"level":"info","ts":1770825019.0934012,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.094294,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000078583}
+        {"level":"info","ts":1770825019.0943081,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.095108,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000302292}
+        {"level":"info","ts":1770825019.095125,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.0960598,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000131375}
+        {"level":"info","ts":1770825019.0961092,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.096598,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000080042}
+        {"level":"info","ts":1770825019.096614,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.097655,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.00023525}
+        {"level":"info","ts":1770825019.0976708,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.098197,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000123667}
+        {"level":"info","ts":1770825019.098228,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.099047,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.00008575}
+        {"level":"info","ts":1770825019.0990632,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.099884,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000354}
+        {"level":"info","ts":1770825019.099902,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.100872,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000129584}
+        {"level":"info","ts":1770825019.1010072,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.101451,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.0001465}
+        {"level":"info","ts":1770825019.101763,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.1026502,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000067166}
+        {"level":"info","ts":1770825019.1026611,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.103133,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000223084}
+        {"level":"info","ts":1770825019.1032488,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.103903,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000065166}
+        {"level":"info","ts":1770825019.103918,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.104417,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000249958}
+        {"level":"info","ts":1770825019.104532,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.105149,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000057458}
+        {"level":"info","ts":1770825019.105161,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.106101,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000531166}
+        {"level":"info","ts":1770825019.106118,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.1069162,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000167125}
+        {"level":"info","ts":1770825019.106931,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.107251,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000055209}
+        {"level":"info","ts":1770825019.107265,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.108073,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000129917}
+        {"level":"info","ts":1770825019.108165,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.108468,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000056667}
+        {"level":"info","ts":1770825019.108479,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.10933,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000185709}
+        {"level":"info","ts":1770825019.109345,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.109766,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000187167}
+        {"level":"info","ts":1770825019.109835,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.110419,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.00005875}
+        {"level":"info","ts":1770825019.110583,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825019.1538272,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.00015875}
+        {"level":"info","ts":1770825019.1538482,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":74}
+        {"level":"info","ts":1770825019.257866,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.0011355}
+        {"level":"info","ts":1770825019.2581692,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":72}
+        {"level":"info","ts":1770825019.359967,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000088458}
+        {"level":"info","ts":1770825019.359995,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":74}
+        {"level":"info","ts":1770825019.462882,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000201417}
+        {"level":"info","ts":1770825019.4629629,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":73}
+        {"level":"info","ts":1770825019.564532,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000296708}
+        {"level":"info","ts":1770825019.5646982,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":67}
+        {"level":"info","ts":1770825019.667077,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000223958}
+        {"level":"info","ts":1770825019.667155,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":76}
+        {"level":"info","ts":1770825019.769645,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000404083}
+        {"level":"info","ts":1770825019.7698,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":79}
+        {"level":"info","ts":1770825019.871924,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000130458}
+        {"level":"info","ts":1770825019.871969,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":77}
+        {"level":"info","ts":1770825019.974627,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000846875}
+        {"level":"info","ts":1770825019.9746811,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":75}
+        {"level":"info","ts":1770825020.077025,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000215375}
+        {"level":"info","ts":1770825020.0770822,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":72}
+        {"level":"info","ts":1770825020.180008,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000825375}
+        {"level":"info","ts":1770825020.1800718,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":79}
+        {"level":"info","ts":1770825020.282295,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000266292}
+        {"level":"info","ts":1770825020.282377,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":73}
+        {"level":"info","ts":1770825020.385432,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000833958}
+        {"level":"info","ts":1770825020.385501,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":90}
+        {"level":"info","ts":1770825020.488083,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000226917}
+        {"level":"info","ts":1770825020.4881642,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":73}
+        {"level":"info","ts":1770825020.591114,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.0008}
+        {"level":"info","ts":1770825020.5912,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":79}
+        {"level":"info","ts":1770825020.694016,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000272583}
+        {"level":"info","ts":1770825020.694103,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":70}
+        {"level":"info","ts":1770825020.796916,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000785917}
+        {"level":"info","ts":1770825020.7969768,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":95}
+        {"level":"info","ts":1770825020.899016,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000116209}
+        {"level":"info","ts":1770825020.899047,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":73}
+        {"level":"info","ts":1770825021.001205,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000616875}
+        {"level":"info","ts":1770825021.00125,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":77}
+        {"level":"info","ts":1770825021.0845802,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000172458}
+        {"level":"info","ts":1770825021.084645,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.08626,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000571042}
+        {"level":"info","ts":1770825021.0863118,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.0869582,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000080833}
+        {"level":"info","ts":1770825021.0869849,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.0879529,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000388333}
+        {"level":"info","ts":1770825021.08798,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.088323,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000053}
+        {"level":"info","ts":1770825021.088337,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.0898,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000613042}
+        {"level":"info","ts":1770825021.0898502,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.09042,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000086041}
+        {"level":"info","ts":1770825021.090445,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.091668,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000451334}
+        {"level":"info","ts":1770825021.091688,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.092055,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.00006}
+        {"level":"info","ts":1770825021.0920708,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.093157,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000437333}
+        {"level":"info","ts":1770825021.093185,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.093559,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000053709}
+        {"level":"info","ts":1770825021.093575,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.094655,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000388}
+        {"level":"info","ts":1770825021.094672,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.0950232,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000049791}
+        {"level":"info","ts":1770825021.09504,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.096158,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000448375}
+        {"level":"info","ts":1770825021.096181,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.096565,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000063083}
+        {"level":"info","ts":1770825021.096579,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.097445,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000265875}
+        {"level":"info","ts":1770825021.097468,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.097949,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000051}
+        {"level":"info","ts":1770825021.097968,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.09902,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.0002765}
+        {"level":"info","ts":1770825021.099045,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.099592,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.0001165}
+        {"level":"info","ts":1770825021.099614,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.100367,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000067792}
+        {"level":"info","ts":1770825021.100385,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.101233,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000305209}
+        {"level":"info","ts":1770825021.101255,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.101807,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.00009125}
+        {"level":"info","ts":1770825021.101822,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":76}
+        {"level":"info","ts":1770825021.102533,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000200459}
+        {"level":"info","ts":1770825021.102551,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.102962,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000155208}
+        {"level":"info","ts":1770825021.102981,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.103604,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.0000515}
+        {"level":"info","ts":1770825021.1036181,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.10421,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000331417}
+        {"level":"info","ts":1770825021.104227,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.1050391,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000095917}
+        {"level":"info","ts":1770825021.1050591,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.105361,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000043416}
+        {"level":"info","ts":1770825021.1053739,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.106167,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000169875}
+        {"level":"info","ts":1770825021.1061828,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.1066,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000084084}
+        {"level":"info","ts":1770825021.106619,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825021.203889,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000191667}
+        {"level":"info","ts":1770825021.203948,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":77}
+        {"level":"info","ts":1770825021.30673,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000878792}
+        {"level":"info","ts":1770825021.307012,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":76}
+        {"level":"info","ts":1770825021.4094348,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000202333}
+        {"level":"info","ts":1770825021.4095008,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":80}
+        {"level":"info","ts":1770825021.512479,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000773292}
+        {"level":"info","ts":1770825021.5125492,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":75}
+        {"level":"info","ts":1770825021.6154711,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000743125}
+        {"level":"info","ts":1770825021.615545,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":86}
+        {"level":"info","ts":1770825021.718014,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000279875}
+        {"level":"info","ts":1770825021.7181199,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":69}
+        {"level":"info","ts":1770825021.8211231,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000723625}
+        {"level":"info","ts":1770825021.8211899,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":76}
+        {"level":"info","ts":1770825021.924256,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000865541}
+        {"level":"info","ts":1770825021.924355,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":75}
+        {"level":"info","ts":1770825022.02651,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000276791}
+        {"level":"info","ts":1770825022.026572,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":77}
+        {"level":"info","ts":1770825022.129239,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000594084}
+        {"level":"info","ts":1770825022.129308,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":73}
+        {"level":"info","ts":1770825022.2318652,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000313834}
+        {"level":"info","ts":1770825022.2319438,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":79}
+        {"level":"info","ts":1770825022.335068,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000898292}
+        {"level":"info","ts":1770825022.33516,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":73}
+        {"level":"info","ts":1770825022.4375958,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000168333}
+        {"level":"info","ts":1770825022.437645,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":92}
+        {"level":"info","ts":1770825022.540131,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000885708}
+        {"level":"info","ts":1770825022.540222,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":73}
+        {"level":"info","ts":1770825022.642679,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000209916}
+        {"level":"info","ts":1770825022.642752,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":70}
+        {"level":"info","ts":1770825022.745973,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000840459}
+        {"level":"info","ts":1770825022.746057,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":77}
+        {"level":"info","ts":1770825022.848544,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000210209}
+        {"level":"info","ts":1770825022.848628,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":76}
+        {"level":"info","ts":1770825022.951715,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.00086475}
+        {"level":"info","ts":1770825022.951806,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":77}
+        {"level":"info","ts":1770825023.054237,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.00022825}
+        {"level":"info","ts":1770825023.0543208,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":76}
+        {"level":"info","ts":1770825023.0859761,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000583167}
+        {"level":"info","ts":1770825023.086027,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.086595,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000062083}
+        {"level":"info","ts":1770825023.086612,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.08766,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000392166}
+        {"level":"info","ts":1770825023.087699,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.088085,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000071}
+        {"level":"info","ts":1770825023.088105,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.0890722,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000326917}
+        {"level":"info","ts":1770825023.0890949,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.08937,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000045583}
+        {"level":"info","ts":1770825023.089383,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.0904,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000563209}
+        {"level":"info","ts":1770825023.090472,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.09122,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000108959}
+        {"level":"info","ts":1770825023.091251,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.092473,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000505458}
+        {"level":"info","ts":1770825023.0924969,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.092957,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.00006025}
+        {"level":"info","ts":1770825023.0929742,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.094151,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.00047525}
+        {"level":"info","ts":1770825023.094176,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.094551,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000058375}
+        {"level":"info","ts":1770825023.094568,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.0956001,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000386209}
+        {"level":"info","ts":1770825023.095621,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.0960152,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000054833}
+        {"level":"info","ts":1770825023.0960279,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.097273,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000423208}
+        {"level":"info","ts":1770825023.09729,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.0976799,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000057917}
+        {"level":"info","ts":1770825023.0976949,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.098984,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000497167}
+        {"level":"info","ts":1770825023.09902,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.099417,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000050041}
+        {"level":"info","ts":1770825023.099436,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.100388,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000419584}
+        {"level":"info","ts":1770825023.100405,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.1007628,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000049417}
+        {"level":"info","ts":1770825023.100775,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.10179,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000358834}
+        {"level":"info","ts":1770825023.1018062,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.102088,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000040708}
+        {"level":"info","ts":1770825023.102098,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.102782,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000313417}
+        {"level":"info","ts":1770825023.102794,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.103081,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.00004225}
+        {"level":"info","ts":1770825023.103093,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.103977,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000354875}
+        {"level":"info","ts":1770825023.104001,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.1042628,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000043792}
+        {"level":"info","ts":1770825023.104277,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.105258,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000380583}
+        {"level":"info","ts":1770825023.1052852,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.105592,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.0000475}
+        {"level":"info","ts":1770825023.1056051,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.1066098,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000396125}
+        {"level":"info","ts":1770825023.106624,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.156749,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000428834}
+        {"level":"info","ts":1770825023.156916,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":77}
+        {"level":"info","ts":1770825023.259255,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000246875}
+        {"level":"info","ts":1770825023.259305,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":76}
+        {"level":"info","ts":1770825023.263835,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.0005515}
+        {"level":"info","ts":1770825023.263869,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":404,"size":82}
+        {"level":"info","ts":1770825023.264559,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000206917}
+        {"level":"info","ts":1770825023.264593,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.264926,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000041583}
+        {"level":"info","ts":1770825023.264937,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.265486,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000342083}
+        {"level":"info","ts":1770825023.265523,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":81}
+        {"level":"info","ts":1770825023.272901,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000143834}
+        {"level":"info","ts":1770825023.273066,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1770825023.27343,"caller":"logger/logger.go:37","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000077167}
+        {"level":"info","ts":1770825023.273443,"caller":"logger/logger.go:37","msg":"HTTP ответ","component":"handler","status":200,"size":86}
+--- PASS: TestIteration7 (8.22s)
+    --- PASS: TestIteration7/TestCollectAgentMetrics (6.06s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/counter/PollCount (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/RandomValue (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/Alloc (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/BuckHashSys (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/Frees (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/GCCPUFraction (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/GCSys (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/HeapAlloc (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/HeapIdle (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/HeapInuse (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/HeapObjects (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/HeapReleased (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/HeapSys (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/LastGC (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/Lookups (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/MCacheInuse (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/MCacheSys (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/MSpanInuse (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/MSpanSys (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/Mallocs (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/NextGC (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/NumForcedGC (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/NumGC (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/OtherSys (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/PauseTotalNs (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/StackInuse (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/StackSys (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/Sys (0.00s)
+        --- PASS: TestIteration7/TestCollectAgentMetrics/gauge/TotalAlloc (0.00s)
+    --- PASS: TestIteration7/TestCounterHandlers (0.00s)
+        --- PASS: TestIteration7/TestCounterHandlers/update (0.00s)
+    --- PASS: TestIteration7/TestEncoderUsage (0.01s)
+    --- PASS: TestIteration7/TestGaugeHandlers (0.00s)
+        --- PASS: TestIteration7/TestGaugeHandlers/update (0.00s)
+PASS
