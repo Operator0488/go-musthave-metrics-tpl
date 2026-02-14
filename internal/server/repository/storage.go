@@ -206,10 +206,15 @@ func (m *Maps) GetData() error {
 	for {
 		var ms models.MetricStore
 		err := dec.Decode(&ms)
-		if errors.Is(err, io.EOF) {
-			break
-		}
+
 		if err != nil {
+			if errors.Is(err, io.EOF) {
+				break
+			}
+			if errors.Is(err, io.ErrUnexpectedEOF) {
+				m.log.Info("Записали не все данные", zap.Error(err))
+				break
+			}
 			return fmt.Errorf("ошибка получения данных: %w", err)
 		}
 		err = m.AddData(ms)
