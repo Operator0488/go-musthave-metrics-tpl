@@ -1,0 +1,124 @@
+{
+	"id": "GetSet218",
+	"type": "gauge",
+	"value": 810621.6658687507
+}
+{
+	"id": "NumGC",
+	"type": "gauge"
+}
+{
+	"id": "HeapIdle",
+	"type": "gauge",
+	"value": 2523136
+}
+{
+	"id": "GCCPUFraction",
+	"type": "gauge"
+}
+{
+	"id": "HeapAlloc",
+	"type": "gauge",
+	"value": 692456
+}
+{
+	"id": "HeapObjects",
+	"type": "gauge",
+	"value": 803
+}
+{
+	"id": "Frees",
+	"type": "gauge",
+	"value": 28
+}
+{
+	"id": "HeapInuse",
+	"type": "gauge",
+	"value": 1253376
+}
+{
+	"id": "PollCount",
+	"type": "counter",
+	"delta": 2
+}
+{
+	"id": "GetSet146",
+	"type": "gauge",
+	"value": 196451.5858191431
+}
+{
+	"id": "GetSet83",
+	"type": "counter",
+	"delta": 2254412436
+}
+{
+	"id": "LastGC",
+	"type": "gauge"
+}
+{
+	"id": "NumForcedGC",
+	"type": "gauge"
+}
+{
+	"id": "OtherSys",
+	"type": "gauge",
+	"value": 677447
+}
+{
+	"id": "MCacheInuse",
+	"type": "gauge",
+	"value": 9664
+}
+{
+	"id": "Lookups",
+	"type": "gauge"
+}
+{
+	"id": "StackSys",
+	"type": "gauge",
+	"value": 262144
+}
+{
+	"id": "GetSet236",
+	"type": "gauge",
+	"value": 719983.9161782153
+}
+{
+	"id": "GetSet16",
+	"type": "counter",
+	"delta": 3322200936
+}
+{
+	"id": "GetSet115",
+	"type": "counter",
+	"delta": 2309193306
+}
+{
+	"id": "StackInuse",
+	"type": "gauge",
+	"value": 262144
+}
+{
+	"id": "PauseTotalNs",
+	"type": "gauge"
+}
+{
+	"id": "GCSys",
+	"type": "gauge",
+	"value": 1780328
+}
+{
+	"id": "HeapReleased",
+	"type": "gauge",
+	"value": 2490368
+}
+{
+	"id": "RandomValue",
+	"type": "gauge",
+	"value": 0.7099562403007196
+}
+{
+	"id": "MSpanInuse",
+	"type": "gauge",
+	"value": 24160
+}

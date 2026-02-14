@@ -5,8 +5,8 @@ import (
 )
 
 var (
-	ErrorGetValue = errors.New("Ошибка получения значения")
-	ErrorDiffType = errors.New("Ошибка: переменная в базе другого типа")
-	ErrorNotDB    = errors.New("Ошибка: переменной нет в базе")
-	ErrorUnType   = errors.New("Есть непредвиденный тип данных в базе")
+	ErrorGetValue = errors.New("ошибка получения значения")
+	ErrorDiffType = errors.New("ошибка: переменная в базе другого типа")
+	ErrorNotDB    = errors.New("ошибка: переменной нет в базе")
+	ErrorUnType   = errors.New("есть непредвиденный тип данных в базе")
 )
