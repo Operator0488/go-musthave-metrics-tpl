@@ -259,6 +259,13 @@ func (m *Maps) snapshot(interval int) {
 					zap.Error(err))
 				break
 			}
+			_, err = m.file.Seek(0, 0)
+			if err != nil {
+				m.muFile.Unlock()
+				m.log.Info("ошибка сброса записи в начало",
+					zap.Error(err))
+				break
+			}
 			m.muFile.Unlock()
 
 			m.mu.RLock()
