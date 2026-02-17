@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -16,13 +17,12 @@ import (
 
 //go:generate mockgen -source=storage.go -destination=./mocks/mock_storage.go -package=mocks
 type MemStorage interface {
-	SaverValue(string, float64) error
-	IncrementValue(string, int64) error
-	GetValueGauge(string) (float64, error)
-	GetValueCounter(string) (int64, error)
-	GetValues() (map[string]any, error)
-	GetData() error
-	AddData(models.MetricStore) error
+	SaverValue(context.Context, string, float64) error
+	IncrementValue(context.Context, string, int64) error
+	GetValueGauge(context.Context, string) (float64, error)
+	GetValueCounter(context.Context, string) (int64, error)
+	GetValues(context.Context) (map[string]any, error)
+	PingDB(context.Context) error
 }
 
 type Maps struct {
@@ -50,7 +50,7 @@ func loadFile(path string) (*os.File, error) {
 	return file, nil
 }
 
-func NewMaps(log logger.Logger, checkInit bool, path string, interval int) (*Maps, error) {
+func NewMaps(ctx context.Context, log logger.Logger, checkInit bool, path string, interval int) (*Maps, error) {
 	store := make(map[string]models.MetricStore)
 
 	file, err := loadFile(path)
@@ -66,7 +66,7 @@ func NewMaps(log logger.Logger, checkInit bool, path string, interval int) (*Map
 	}
 
 	if checkInit {
-		err = maps.GetData()
+		err = maps.getData(ctx)
 		if err != nil {
 			return nil, fmt.Errorf("ошибка получения данных: %w", err)
 		}
@@ -77,7 +77,7 @@ func NewMaps(log logger.Logger, checkInit bool, path string, interval int) (*Map
 	return maps, nil
 }
 
-func (m *Maps) SaverValue(name string, value float64) error {
+func (m *Maps) SaverValue(ctx context.Context, name string, value float64) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -109,7 +109,7 @@ func (m *Maps) SaverValue(name string, value float64) error {
 	return nil
 }
 
-func (m *Maps) IncrementValue(name string, value int64) error {
+func (m *Maps) IncrementValue(ctx context.Context, name string, value int64) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -143,7 +143,7 @@ func (m *Maps) IncrementValue(name string, value int64) error {
 	return nil
 }
 
-func (m *Maps) GetValueGauge(name string) (float64, error) {
+func (m *Maps) GetValueGauge(ctx context.Context, name string) (float64, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
@@ -154,7 +154,7 @@ func (m *Maps) GetValueGauge(name string) (float64, error) {
 	return 0, models.ErrorNotDB
 }
 
-func (m *Maps) GetValueCounter(name string) (int64, error) {
+func (m *Maps) GetValueCounter(ctx context.Context, name string) (int64, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
@@ -165,7 +165,7 @@ func (m *Maps) GetValueCounter(name string) (int64, error) {
 	return 0, models.ErrorNotDB
 }
 
-func (m *Maps) GetValues() (map[string]any, error) {
+func (m *Maps) GetValues(ctx context.Context) (map[string]any, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
@@ -200,7 +200,7 @@ func (m *Maps) saveData(request models.MetricStore) error {
 	return nil
 }
 
-func (m *Maps) GetData() error {
+func (m *Maps) getData(ctx context.Context) error {
 	dec := json.NewDecoder(m.file)
 
 	for {
@@ -217,27 +217,17 @@ func (m *Maps) GetData() error {
 			}
 			return fmt.Errorf("ошибка получения данных: %w", err)
 		}
-		err = m.AddData(ms)
+
+		if ms.MType == models.Gauge {
+			err = m.SaverValue(ctx, ms.ID, ms.Value)
+		}
+
+		if ms.MType == models.Counter {
+			err = m.IncrementValue(ctx, ms.ID, ms.Delta)
+		}
+
 		if err != nil {
 			return fmt.Errorf("ошибка добавление данных в storage: %w", err)
-		}
-	}
-
-	return nil
-}
-
-func (m *Maps) AddData(ms models.MetricStore) error {
-	if ms.MType == models.Gauge {
-		err := m.SaverValue(ms.ID, ms.Value)
-		if err != nil {
-			return err
-		}
-	}
-
-	if ms.MType == models.Counter {
-		err := m.IncrementValue(ms.ID, ms.Delta)
-		if err != nil {
-			return err
 		}
 	}
 
@@ -285,4 +275,8 @@ func (m *Maps) snapshot(interval int) {
 			m.mu.RUnlock()
 		}
 	}()
+}
+
+func (m *Maps) PingDB(ctx context.Context) error {
+	return fmt.Errorf("нет подключения к БД")
 }

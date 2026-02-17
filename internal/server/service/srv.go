@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
@@ -14,9 +15,10 @@ type StorageService struct {
 
 //go:generate mockgen -source=srv.go -destination=./mocks/mock_srv.go -package=mocks
 type Service interface {
-	SenderPostUpdate(req models.PostUpdateRequest) error
-	SenderGetValue(req models.GetValueRequest) (models.GetValueResponse, error)
-	SenderGetValues() (map[string]any, error)
+	SenderPostUpdate(ctx context.Context, req models.PostUpdateRequest) error
+	SenderGetValue(ctx context.Context, req models.GetValueRequest) (models.GetValueResponse, error)
+	SenderGetValues(ctx context.Context) (map[string]any, error)
+	PingDB(ctx context.Context) error
 }
 
 func NewStorageService(log logger.Logger, storage repository.MemStorage) *StorageService {
@@ -26,11 +28,11 @@ func NewStorageService(log logger.Logger, storage repository.MemStorage) *Storag
 	}
 }
 
-func (s *StorageService) SenderGetValues() (map[string]any, error) {
-	return s.storage.GetValues()
+func (s *StorageService) SenderGetValues(ctx context.Context) (map[string]any, error) {
+	return s.storage.GetValues(ctx)
 }
 
-func (s *StorageService) SenderGetValue(req models.GetValueRequest) (models.GetValueResponse, error) {
+func (s *StorageService) SenderGetValue(ctx context.Context, req models.GetValueRequest) (models.GetValueResponse, error) {
 	res := models.GetValueResponse{
 		ID:    req.ID,
 		MType: req.MType,
@@ -39,7 +41,7 @@ func (s *StorageService) SenderGetValue(req models.GetValueRequest) (models.GetV
 	switch req.MType {
 
 	case models.Gauge:
-		num, err := s.storage.GetValueGauge(req.ID)
+		num, err := s.storage.GetValueGauge(ctx, req.ID)
 		if err != nil {
 			return res, err
 		}
@@ -47,7 +49,7 @@ func (s *StorageService) SenderGetValue(req models.GetValueRequest) (models.GetV
 		return res, nil
 
 	case models.Counter:
-		num, err := s.storage.GetValueCounter(req.ID)
+		num, err := s.storage.GetValueCounter(ctx, req.ID)
 		if err != nil {
 			return res, err
 		}
@@ -59,7 +61,7 @@ func (s *StorageService) SenderGetValue(req models.GetValueRequest) (models.GetV
 	}
 }
 
-func (s *StorageService) SenderPostUpdate(req models.PostUpdateRequest) error {
+func (s *StorageService) SenderPostUpdate(ctx context.Context, req models.PostUpdateRequest) error {
 
 	switch req.MType {
 
@@ -72,7 +74,7 @@ func (s *StorageService) SenderPostUpdate(req models.PostUpdateRequest) error {
 			req.Value = &val
 		}
 		if req.Value != nil {
-			err := s.storage.SaverValue(req.ID, *req.Value)
+			err := s.storage.SaverValue(ctx, req.ID, *req.Value)
 			return err
 		}
 		return fmt.Errorf("ошибка, странный запрос")
@@ -86,7 +88,7 @@ func (s *StorageService) SenderPostUpdate(req models.PostUpdateRequest) error {
 			req.Delta = &val
 		}
 		if req.Delta != nil {
-			err := s.storage.IncrementValue(req.ID, *req.Delta)
+			err := s.storage.IncrementValue(ctx, req.ID, *req.Delta)
 			return err
 		}
 		return fmt.Errorf("ошибка, странный запрос")
@@ -95,4 +97,8 @@ func (s *StorageService) SenderPostUpdate(req models.PostUpdateRequest) error {
 		return fmt.Errorf("ошибка, нет подходящего типа")
 
 	}
+}
+
+func (s *StorageService) PingDB(ctx context.Context) error {
+	return s.storage.PingDB(ctx)
 }

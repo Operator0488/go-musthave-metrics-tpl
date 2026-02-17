@@ -1,25 +1,49 @@
 {
-	"id": "GetSet218",
+	"id": "GetSet169",
 	"type": "gauge",
-	"value": 810621.6658687507
+	"value": 679416.9632610119
 }
 {
-	"id": "NumGC",
+	"id": "LastGC",
 	"type": "gauge"
 }
 {
-	"id": "HeapIdle",
-	"type": "gauge",
-	"value": 2523136
+	"id": "GetSet115",
+	"type": "counter",
+	"delta": 2309193306
 }
 {
-	"id": "GCCPUFraction",
+	"id": "StackSys",
+	"type": "gauge",
+	"value": 262144
+}
+{
+	"id": "HeapInuse",
+	"type": "gauge",
+	"value": 1253376
+}
+{
+	"id": "Lookups",
 	"type": "gauge"
 }
 {
-	"id": "HeapAlloc",
+	"id": "GetSet83",
+	"type": "counter",
+	"delta": 2254412436
+}
+{
+	"id": "PauseTotalNs",
+	"type": "gauge"
+}
+{
+	"id": "GetSet146",
 	"type": "gauge",
-	"value": 692456
+	"value": 196451.5858191431
+}
+{
+	"id": "OtherSys",
+	"type": "gauge",
+	"value": 677447
 }
 {
 	"id": "HeapObjects",
@@ -32,9 +56,9 @@
 	"value": 28
 }
 {
-	"id": "HeapInuse",
+	"id": "HeapAlloc",
 	"type": "gauge",
-	"value": 1253376
+	"value": 692456
 }
 {
 	"id": "PollCount",
@@ -42,27 +66,23 @@
 	"delta": 2
 }
 {
-	"id": "GetSet146",
+	"id": "RandomValue",
 	"type": "gauge",
-	"value": 196451.5858191431
+	"value": 0.7099562403007196
 }
 {
-	"id": "GetSet83",
-	"type": "counter",
-	"delta": 2254412436
+	"id": "GetSet13",
+	"type": "gauge",
+	"value": 243589.19312139368
 }
 {
-	"id": "LastGC",
+	"id": "NumGC",
 	"type": "gauge"
 }
 {
-	"id": "NumForcedGC",
-	"type": "gauge"
-}
-{
-	"id": "OtherSys",
+	"id": "HeapIdle",
 	"type": "gauge",
-	"value": 677447
+	"value": 2523136
 }
 {
 	"id": "MCacheInuse",
@@ -70,18 +90,9 @@
 	"value": 9664
 }
 {
-	"id": "Lookups",
-	"type": "gauge"
-}
-{
-	"id": "StackSys",
+	"id": "StackInuse",
 	"type": "gauge",
 	"value": 262144
-}
-{
-	"id": "GetSet236",
-	"type": "gauge",
-	"value": 719983.9161782153
 }
 {
 	"id": "GetSet16",
@@ -89,23 +100,37 @@
 	"delta": 3322200936
 }
 {
-	"id": "GetSet115",
-	"type": "counter",
-	"delta": 2309193306
-}
-{
-	"id": "StackInuse",
+	"id": "MSpanInuse",
 	"type": "gauge",
-	"value": 262144
+	"value": 24160
 }
 {
-	"id": "PauseTotalNs",
+	"id": "GetSet236",
+	"type": "gauge",
+	"value": 719983.9161782153
+}
+{
+	"id": "NumForcedGC",
 	"type": "gauge"
 }
 {
-	"id": "GCSys",
+	"id": "GetSet123",
+	"type": "counter",
+	"delta": 2843034031
+}
+{
+	"id": "GetSet218",
 	"type": "gauge",
-	"value": 1780328
+	"value": 810621.6658687507
+}
+{
+	"id": "GetSet105",
+	"type": "counter",
+	"delta": 2304183806
+}
+{
+	"id": "GCCPUFraction",
+	"type": "gauge"
 }
 {
 	"id": "HeapReleased",
@@ -113,12 +138,7 @@
 	"value": 2490368
 }
 {
-	"id": "RandomValue",
+	"id": "GCSys",
 	"type": "gauge",
-	"value": 0.7099562403007196
-}
-{
-	"id": "MSpanInuse",
-	"type": "gauge",
-	"value": 24160
+	"value": 1780328
 }

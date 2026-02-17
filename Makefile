@@ -59,6 +59,24 @@ test9:
       	-server-port=8080 \
         -source-path=.
 
+test10:
+	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration10[AB]$ \
+    	-agent-binary-path=cmd/agent/agent \
+        -binary-path=cmd/server/server \
+        -file-storage-path=./file \
+        -database-dsn='postgres://postgres:yourpasswords@localhost:5432/postgres?sslmode=disable' \
+      	-server-port=8080 \
+        -source-path=.
+
+test11:
+	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration11$ \
+    	-agent-binary-path=cmd/agent/agent \
+        -binary-path=cmd/server/server \
+        -file-storage-path=./file \
+        -database-dsn='postgres://postgres:yourpasswords@localhost:5432/postgres?sslmode=disable' \
+      	-server-port=8080 \
+        -source-path=.
+
 test9-log:
 	@mkdir -p logs
 	@$(MAKE) test9 2>&1 | tee logs/test9.log
@@ -82,3 +100,6 @@ buildAgent:
 .PHONY: test
 test:
 	@go test ./... -coverprofile cover.out && go tool cover -func cover.out && go tool cover -html cover.out
+
+migration:
+	@goose -dir migrations/postgres create metrics sql

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
@@ -11,6 +12,7 @@ import (
 	"go.uber.org/zap"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type StorageHandler struct {
@@ -26,6 +28,7 @@ type Handler interface {
 	GetValue(http.ResponseWriter, *http.Request)
 	GetValues(http.ResponseWriter, *http.Request)
 	returnLogger() logger.Logger
+	GetPingDB(http.ResponseWriter, *http.Request)
 }
 
 func NewRoute(h Handler) http.Handler {
@@ -52,6 +55,8 @@ func NewChiRoute(h Handler) http.Handler {
 
 		r.Get("/", h.GetValues)
 
+		r.Get("/ping", h.GetPingDB)
+
 		r.Route("/update", func(r chi.Router) {
 			r.Post("/", h.PostUpdateWithBody)
 			r.Post("/{type}/{name}/{value}", h.PostUpdate)
@@ -74,6 +79,9 @@ func NewStorageHandler(log logger.Logger, service service.Service) *StorageHandl
 }
 
 func (s *StorageHandler) GetValue(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
 	t := chi.URLParam(r, "type")
 	if t != models.Gauge && t != models.Counter {
 		errorStatusNotFound(w, fmt.Errorf("ошибка: неправильный тип, %v", t).Error())
@@ -91,7 +99,7 @@ func (s *StorageHandler) GetValue(w http.ResponseWriter, r *http.Request) {
 		ID:    n,
 	}
 
-	str, err := s.service.SenderGetValue(req)
+	str, err := s.service.SenderGetValue(ctx, req)
 	if err != nil {
 		errorStatusNotFound(w, fmt.Errorf("ошибка: %w", err).Error())
 		return
@@ -117,7 +125,10 @@ func (s *StorageHandler) GetValue(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *StorageHandler) GetValues(w http.ResponseWriter, r *http.Request) {
-	data, err := s.service.SenderGetValues()
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
+	data, err := s.service.SenderGetValues(ctx)
 	if err != nil {
 		errorStatusNotFound(w, fmt.Errorf("ошибка: %v", err).Error())
 		return
@@ -135,6 +146,9 @@ func (s *StorageHandler) GetValues(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *StorageHandler) PostUpdate(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
 	shares := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
 	if len(shares) != 4 || shares[0] != "update" {
 		errorBadRequest(w, fmt.Errorf("ошибка: неправильный запрос, %v", r.URL.Path).Error())
@@ -150,7 +164,7 @@ func (s *StorageHandler) PostUpdate(w http.ResponseWriter, r *http.Request) {
 		ValueStr: shares[3],
 	}
 
-	err := s.service.SenderPostUpdate(req)
+	err := s.service.SenderPostUpdate(ctx, req)
 	if err != nil {
 		errorBadRequest(w, err.Error())
 		return
@@ -160,6 +174,9 @@ func (s *StorageHandler) PostUpdate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *StorageHandler) PostUpdateWithBody(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
 	var data bytes.Buffer
 	_, err := data.ReadFrom(r.Body)
 	if err != nil {
@@ -178,7 +195,7 @@ func (s *StorageHandler) PostUpdateWithBody(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err = s.service.SenderPostUpdate(req)
+	err = s.service.SenderPostUpdate(ctx, req)
 	if err != nil {
 		errorBadRequest(w, err.Error())
 		return
@@ -188,6 +205,9 @@ func (s *StorageHandler) PostUpdateWithBody(w http.ResponseWriter, r *http.Reque
 }
 
 func (s *StorageHandler) PostValueWithBody(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
 	var data bytes.Buffer
 	_, err := data.ReadFrom(r.Body)
 	if err != nil {
@@ -208,7 +228,7 @@ func (s *StorageHandler) PostValueWithBody(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	res, err := s.service.SenderGetValue(req)
+	res, err := s.service.SenderGetValue(ctx, req)
 	if err != nil {
 		errorStatusNotFound(w, fmt.Errorf("ошибка: %v", err).Error())
 		return
@@ -231,4 +251,19 @@ func (s *StorageHandler) PostValueWithBody(w http.ResponseWriter, r *http.Reques
 
 func (s *StorageHandler) returnLogger() logger.Logger {
 	return s.log
+}
+
+func (s *StorageHandler) GetPingDB(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
+	err := s.service.PingDB(ctx)
+	if err != nil {
+		s.log.Info("ошибка при ping db",
+			zap.Error(err),
+		)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
