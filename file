@@ -1,39 +1,7 @@
 {
-	"id": "GetSet169",
-	"type": "gauge",
-	"value": 679416.9632610119
-}
-{
-	"id": "LastGC",
-	"type": "gauge"
-}
-{
-	"id": "GetSet115",
-	"type": "counter",
-	"delta": 2309193306
-}
-{
-	"id": "StackSys",
-	"type": "gauge",
-	"value": 262144
-}
-{
-	"id": "HeapInuse",
-	"type": "gauge",
-	"value": 1253376
-}
-{
-	"id": "Lookups",
-	"type": "gauge"
-}
-{
 	"id": "GetSet83",
 	"type": "counter",
 	"delta": 2254412436
-}
-{
-	"id": "PauseTotalNs",
-	"type": "gauge"
 }
 {
 	"id": "GetSet146",
@@ -41,68 +9,9 @@
 	"value": 196451.5858191431
 }
 {
-	"id": "OtherSys",
+	"id": "GetSet169",
 	"type": "gauge",
-	"value": 677447
-}
-{
-	"id": "HeapObjects",
-	"type": "gauge",
-	"value": 803
-}
-{
-	"id": "Frees",
-	"type": "gauge",
-	"value": 28
-}
-{
-	"id": "HeapAlloc",
-	"type": "gauge",
-	"value": 692456
-}
-{
-	"id": "PollCount",
-	"type": "counter",
-	"delta": 2
-}
-{
-	"id": "RandomValue",
-	"type": "gauge",
-	"value": 0.7099562403007196
-}
-{
-	"id": "GetSet13",
-	"type": "gauge",
-	"value": 243589.19312139368
-}
-{
-	"id": "NumGC",
-	"type": "gauge"
-}
-{
-	"id": "HeapIdle",
-	"type": "gauge",
-	"value": 2523136
-}
-{
-	"id": "MCacheInuse",
-	"type": "gauge",
-	"value": 9664
-}
-{
-	"id": "StackInuse",
-	"type": "gauge",
-	"value": 262144
-}
-{
-	"id": "GetSet16",
-	"type": "counter",
-	"delta": 3322200936
-}
-{
-	"id": "MSpanInuse",
-	"type": "gauge",
-	"value": 24160
+	"value": 679416.9632610119
 }
 {
 	"id": "GetSet236",
@@ -110,7 +19,66 @@
 	"value": 719983.9161782153
 }
 {
-	"id": "NumForcedGC",
+	"id": "GetSet16",
+	"type": "counter",
+	"delta": 3322200936
+}
+{
+	"id": "GetSet115",
+	"type": "counter",
+	"delta": 2309193306
+}
+{
+	"id": "Frees",
+	"type": "gauge",
+	"value": 28
+}
+{
+	"id": "HeapInuse",
+	"type": "gauge",
+	"value": 1253376
+}
+{
+	"id": "OtherSys",
+	"type": "gauge",
+	"value": 677447
+}
+{
+	"id": "MSpanInuse",
+	"type": "gauge",
+	"value": 24160
+}
+{
+	"id": "GetSet215",
+	"type": "counter",
+	"delta": 2755808564
+}
+{
+	"id": "GetSet13",
+	"type": "gauge",
+	"value": 243589.19312139368
+}
+{
+	"id": "HeapIdle",
+	"type": "gauge",
+	"value": 2523136
+}
+{
+	"id": "HeapObjects",
+	"type": "gauge",
+	"value": 803
+}
+{
+	"id": "PauseTotalNs",
+	"type": "gauge"
+}
+{
+	"id": "GetSet86",
+	"type": "gauge",
+	"value": 580333.2383393655
+}
+{
+	"id": "Lookups",
 	"type": "gauge"
 }
 {
@@ -119,9 +87,36 @@
 	"delta": 2843034031
 }
 {
+	"id": "MCacheInuse",
+	"type": "gauge",
+	"value": 9664
+}
+{
 	"id": "GetSet218",
 	"type": "gauge",
 	"value": 810621.6658687507
+}
+{
+	"id": "NumForcedGC",
+	"type": "gauge"
+}
+{
+	"id": "StackSys",
+	"type": "gauge",
+	"value": 262144
+}
+{
+	"id": "StackInuse",
+	"type": "gauge",
+	"value": 262144
+}
+{
+	"id": "LastGC",
+	"type": "gauge"
+}
+{
+	"id": "NumGC",
+	"type": "gauge"
 }
 {
 	"id": "GetSet105",
@@ -129,8 +124,14 @@
 	"delta": 2304183806
 }
 {
-	"id": "GCCPUFraction",
-	"type": "gauge"
+	"id": "RandomValue",
+	"type": "gauge",
+	"value": 0.7099562403007196
+}
+{
+	"id": "PollCount",
+	"type": "counter",
+	"delta": 2
 }
 {
 	"id": "HeapReleased",
@@ -141,4 +142,13 @@
 	"id": "GCSys",
 	"type": "gauge",
 	"value": 1780328
+}
+{
+	"id": "GCCPUFraction",
+	"type": "gauge"
+}
+{
+	"id": "HeapAlloc",
+	"type": "gauge",
+	"value": 692456
 }

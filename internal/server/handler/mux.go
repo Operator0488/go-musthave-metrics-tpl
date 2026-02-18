@@ -24,6 +24,7 @@ type StorageHandler struct {
 type Handler interface {
 	PostUpdate(http.ResponseWriter, *http.Request)
 	PostUpdateWithBody(http.ResponseWriter, *http.Request)
+	PostUpdatesWithBody(http.ResponseWriter, *http.Request)
 	PostValueWithBody(http.ResponseWriter, *http.Request)
 	GetValue(http.ResponseWriter, *http.Request)
 	GetValues(http.ResponseWriter, *http.Request)
@@ -60,6 +61,10 @@ func NewChiRoute(h Handler) http.Handler {
 		r.Route("/update", func(r chi.Router) {
 			r.Post("/", h.PostUpdateWithBody)
 			r.Post("/{type}/{name}/{value}", h.PostUpdate)
+		})
+
+		r.Route("/updates", func(r chi.Router) {
+			r.Post("/", h.PostUpdatesWithBody)
 		})
 
 		r.Route("/value", func(r chi.Router) {
@@ -196,6 +201,42 @@ func (s *StorageHandler) PostUpdateWithBody(w http.ResponseWriter, r *http.Reque
 	}
 
 	err = s.service.SenderPostUpdate(ctx, req)
+	if err != nil {
+		errorBadRequest(w, err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (s *StorageHandler) PostUpdatesWithBody(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
+	var data bytes.Buffer
+	_, err := data.ReadFrom(r.Body)
+	if err != nil {
+		s.log.Info("ошибка при чтении body",
+			zap.String("err", err.Error()))
+		errorBadRequest(w, fmt.Errorf("ошибка: %w", err).Error())
+		return
+	}
+
+	var reqs []models.PostUpdateRequest
+	err = json.Unmarshal(data.Bytes(), &reqs)
+	if err != nil {
+		var req models.PostUpdateRequest
+		err = json.Unmarshal(data.Bytes(), &req)
+		if err != nil {
+			s.log.Info("ошибка при unmarshal",
+				zap.String("err", err.Error()))
+			errorBadRequest(w, fmt.Errorf("ошибка: %w", err).Error())
+			return
+		}
+		reqs = []models.PostUpdateRequest{req}
+	}
+
+	err = s.service.SenderPostUpdates(ctx, reqs)
 	if err != nil {
 		errorBadRequest(w, err.Error())
 		return

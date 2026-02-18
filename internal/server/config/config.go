@@ -2,7 +2,6 @@ package config
 
 import (
 	"flag"
-	"fmt"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
 	"github.com/caarlos0/env/v11"
 	"strings"
@@ -15,42 +14,43 @@ func NewServerConfig() (models.ServerConfig, error) {
 func getConfig() (models.ServerConfig, error) {
 	conf := models.ServerConfig{}
 
-	err := env.Parse(&conf)
-	if err != nil {
-		return conf, fmt.Errorf("ошибка, парсинга env: %w", err)
-	}
+	port := "localhost:8080"
+	filePath := ".storage"
+	interval := 0
+	restore := false
+	dsn := ""
 
-	if conf.Port == "" {
-		flag.StringVar(&conf.Port, "a", "localhost:8080", "address and port to run server")
-	}
+	flag.StringVar(&port, "a", port, "address and port to run server")
+	flag.IntVar(&interval, "i", interval, "store interval")
+	flag.BoolVar(&restore, "r", restore, "restore data from storage")
+	flag.StringVar(&filePath, "f", filePath, "dir for file storage")
+	flag.StringVar(&dsn, "d", dsn, "dsn for database")
 
-	if conf.StoreInterval == nil {
-		var si int
-		flag.IntVar(&si, "i", 0, "store interval")
-		conf.StoreInterval = &si
-	}
+	_ = env.Parse(&conf)
 
-	if conf.Restore == nil {
-		var r bool
-		flag.Bool("r", r, "false")
-		conf.Restore = &r
+	if conf.Port != "" {
+		port = conf.Port
 	}
-
-	if conf.FileStoragePath == "" {
-		flag.StringVar(&conf.FileStoragePath, "f", ".storage", "address and port to run server")
-		conf.FileStoragePath = strings.TrimSuffix(conf.FileStoragePath, "/")
-		conf.FileStoragePath += "/wall.txt"
+	if conf.StoreInterval != nil {
+		interval = *conf.StoreInterval
 	}
-
-	if conf.DbDsn == "" {
-		flag.StringVar(&conf.DbDsn, "d", "", "dsn fo database")
+	if conf.Restore != nil {
+		restore = *conf.Restore
+	}
+	if conf.FileStoragePath != "" {
+		filePath = conf.FileStoragePath
+	}
+	if conf.DbDsn != "" {
+		dsn = conf.DbDsn
 	}
 
 	flag.Parse()
 
-	if len(flag.Args()) > 0 {
-		return conf, fmt.Errorf("ошибка, неизвестные флаги: %v", flag.Args())
-	}
+	conf.Port = port
+	conf.FileStoragePath = strings.TrimSuffix(filePath, "/") + "/wall.txt"
+	conf.DbDsn = dsn
+	conf.StoreInterval = &interval
+	conf.Restore = &restore
 
 	return conf, nil
 }

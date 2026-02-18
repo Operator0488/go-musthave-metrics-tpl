@@ -72,10 +72,20 @@ test11:
 	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration11$ \
     	-agent-binary-path=cmd/agent/agent \
         -binary-path=cmd/server/server \
-        -file-storage-path=./file \
         -database-dsn='postgres://postgres:yourpasswords@localhost:5432/postgres?sslmode=disable' \
       	-server-port=8080 \
         -source-path=.
+
+test12:
+	@go build -o cmd/agent/agent cmd/agent/*.go
+	@go build -o cmd/server/server cmd/server/*.go
+	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration12$ \
+    	-agent-binary-path=cmd/agent/agent \
+        -binary-path=cmd/server/server \
+        -database-dsn='postgres://postgres:yourpasswords@localhost:5432/postgres?sslmode=disable' \
+      	-server-port=8080 \
+        -source-path=.
+
 
 test9-log:
 	@mkdir -p logs

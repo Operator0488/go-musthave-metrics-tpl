@@ -20,6 +20,7 @@ type ClientResty struct {
 //go:generate mockgen -source=client.go -destination=./mocks/mock_client.go -package=mocks
 type Sender interface {
 	SendRequest()
+	SendRequestBatch()
 }
 
 func NewClientResty(log logger.Logger, mn service.Manager, conf config.AgentConfig) *ClientResty {
@@ -68,5 +69,41 @@ func (c *ClientResty) SendRequest() {
 				zap.Error(err),
 				zap.Int("status", status))
 		}
+	}
+}
+
+func (c *ClientResty) SendRequestBatch() {
+	m := c.mn.GetMap()
+	reqs := make([]models.PostUpdateRequest, 0, len(m))
+
+	for k, v := range m {
+		req := models.PostUpdateRequest{
+			MType: v.Type,
+			ID:    k,
+		}
+		if v.Type == "gauge" {
+			node := v.Value
+			req.Value = &node
+		} else {
+			node := int64(v.Value)
+			req.Delta = &node
+		}
+
+		reqs = append(reqs, req)
+	}
+
+	resp, err := c.cli.R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(reqs).
+		Post(fmt.Sprintf("http://%s/updates/", c.conf.Port))
+
+	if err != nil {
+		status := 0
+		if resp != nil {
+			status = resp.StatusCode()
+		}
+		c.log.Info("Ошибка при отправке запроса",
+			zap.Error(err),
+			zap.Int("status", status))
 	}
 }

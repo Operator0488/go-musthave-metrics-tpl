@@ -17,12 +17,13 @@ import (
 
 //go:generate mockgen -source=storage.go -destination=./mocks/mock_storage.go -package=mocks
 type MemStorage interface {
-	SaverValue(context.Context, string, float64) error
+	SaveValue(context.Context, string, float64) error
 	IncrementValue(context.Context, string, int64) error
 	GetValueGauge(context.Context, string) (float64, error)
 	GetValueCounter(context.Context, string) (int64, error)
 	GetValues(context.Context) (map[string]any, error)
 	PingDB(context.Context) error
+	SaveValues(context.Context, []models.PostUpdateRequest) error
 }
 
 type Maps struct {
@@ -77,7 +78,7 @@ func NewMaps(ctx context.Context, log logger.Logger, checkInit bool, path string
 	return maps, nil
 }
 
-func (m *Maps) SaverValue(ctx context.Context, name string, value float64) error {
+func (m *Maps) SaveValue(ctx context.Context, name string, value float64) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -219,7 +220,7 @@ func (m *Maps) getData(ctx context.Context) error {
 		}
 
 		if ms.MType == models.Gauge {
-			err = m.SaverValue(ctx, ms.ID, ms.Value)
+			err = m.SaveValue(ctx, ms.ID, ms.Value)
 		}
 
 		if ms.MType == models.Counter {
@@ -279,4 +280,30 @@ func (m *Maps) snapshot(interval int) {
 
 func (m *Maps) PingDB(ctx context.Context) error {
 	return fmt.Errorf("нет подключения к БД")
+}
+
+func (m *Maps) SaveValues(ctx context.Context, reqs []models.PostUpdateRequest) error {
+	var errs []error
+
+	for _, req := range reqs {
+		switch req.MType {
+		case models.Gauge:
+			err := m.SaveValue(ctx, req.ID, *req.Value)
+			if err != nil {
+				errs = append(errs, fmt.Errorf("ошибка сохранения %s, %s, %s: %w", req.ID, *req.Value, req.MType, err))
+			}
+		case models.Counter:
+			err := m.IncrementValue(ctx, req.ID, *req.Delta)
+			if err != nil {
+				errs = append(errs, fmt.Errorf("ошибка сохранения %s, %s, %s: %w", req.ID, *req.Delta, req.MType, err))
+			}
+		}
+
+	}
+
+	if len(errs) != 0 {
+		return errors.Join(errs...)
+	}
+
+	return nil
 }

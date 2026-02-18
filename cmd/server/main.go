@@ -38,7 +38,7 @@ func run(ctx context.Context, conf models.ServerConfig) error {
 
 	var str repository.MemStorage
 
-	conf.DbDsn = "postgres://postgres:yourpasswords@localhost:5432/postgres?sslmode=disable"
+	//conf.DbDsn = "postgres://postgres:yourpasswords@localhost:5432/postgres?sslmode=disable"
 
 	if conf.DbDsn != "" {
 		db, err := sql.Open("pgx", conf.DbDsn)

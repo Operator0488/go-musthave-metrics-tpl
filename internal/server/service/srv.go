@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
@@ -15,6 +16,7 @@ type StorageService struct {
 
 //go:generate mockgen -source=srv.go -destination=./mocks/mock_srv.go -package=mocks
 type Service interface {
+	SenderPostUpdates(ctx context.Context, req []models.PostUpdateRequest) error
 	SenderPostUpdate(ctx context.Context, req models.PostUpdateRequest) error
 	SenderGetValue(ctx context.Context, req models.GetValueRequest) (models.GetValueResponse, error)
 	SenderGetValues(ctx context.Context) (map[string]any, error)
@@ -74,7 +76,7 @@ func (s *StorageService) SenderPostUpdate(ctx context.Context, req models.PostUp
 			req.Value = &val
 		}
 		if req.Value != nil {
-			err := s.storage.SaverValue(ctx, req.ID, *req.Value)
+			err := s.storage.SaveValue(ctx, req.ID, *req.Value)
 			return err
 		}
 		return fmt.Errorf("ошибка, странный запрос")
@@ -97,6 +99,60 @@ func (s *StorageService) SenderPostUpdate(ctx context.Context, req models.PostUp
 		return fmt.Errorf("ошибка, нет подходящего типа")
 
 	}
+}
+
+func (s *StorageService) SenderPostUpdates(ctx context.Context, reqs []models.PostUpdateRequest) error {
+	var errs []error
+
+	valid := make([]models.PostUpdateRequest, 0, len(reqs))
+
+	for i, req := range reqs {
+		var err error
+
+		switch req.MType {
+
+		case models.Gauge:
+			if req.ValueStr != "" && req.Value == nil {
+				val, e := getValueFloat(req.ValueStr)
+				if e != nil {
+					err = e
+					reqs = append(reqs[:i], reqs[i+1:]...)
+					continue
+				}
+				req.Value = &val
+			}
+			valid = append(valid, req)
+
+		case models.Counter:
+			if req.ValueStr != "" && req.Delta == nil {
+				val, e := getValueInt(req.ValueStr)
+				if e != nil {
+					err = e
+					continue
+				}
+				req.Delta = &val
+			}
+			valid = append(valid, req)
+
+		default:
+			err = fmt.Errorf("ошибка, нет подходящего типа")
+
+		}
+
+		if err != nil {
+			errs = append(errs, fmt.Errorf("не записаны %q (%s) ошибка: %w", req.ID, req.MType, err))
+		}
+	}
+
+	if len(errs) != 0 {
+		return errors.Join(errs...)
+	}
+
+	err := s.storage.SaveValues(ctx, valid)
+	if err != nil {
+		return fmt.Errorf("не удалось сохранить данные: %w", err)
+	}
+	return nil
 }
 
 func (s *StorageService) PingDB(ctx context.Context) error {

@@ -1,13 +1,16 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE metrics (
-    id VARCHAR(255) UNIQUE NOT NULL,
-    type TEXT CHECK ( type IN('gauge', 'counter') ),
+    id VARCHAR(255) UNIQUE,
+    type TEXT NOT NULL CHECK (type IN ('gauge','counter')),
     value DOUBLE PRECISION,
-    delta BIGINT
+    delta BIGINT,
+    CONSTRAINT match_type CHECK (
+        (type='gauge' AND value IS NOT NULL AND delta IS NULL) OR
+        (type='counter' AND delta IS NOT NULL AND value IS NULL)
+        )
 );
 
-CREATE INDEX idx_metrics_id ON metrics(id);
 -- +goose StatementEnd
 
 -- +goose Down
