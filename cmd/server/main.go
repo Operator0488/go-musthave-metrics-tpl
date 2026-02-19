@@ -38,10 +38,10 @@ func run(ctx context.Context, conf models.ServerConfig) error {
 
 	var str repository.MemStorage
 
-	//conf.DbDsn = "postgres://postgres:yourpasswords@localhost:5432/postgres?sslmode=disable"
+	//conf.DBDsn = "postgres://postgres:yourpasswords@localhost:5432/postgres?sslmode=disable"
 
-	if conf.DbDsn != "" {
-		db, err := sql.Open("pgx", conf.DbDsn)
+	if conf.DBDsn != "" {
+		db, err := sql.Open("pgx", conf.DBDsn)
 		if err != nil {
 			return fmt.Errorf("ошибка подключения к БД: %w", err)
 		}

@@ -40,15 +40,15 @@ func getConfig() (models.ServerConfig, error) {
 	if conf.FileStoragePath != "" {
 		filePath = conf.FileStoragePath
 	}
-	if conf.DbDsn != "" {
-		dsn = conf.DbDsn
+	if conf.DBDsn != "" {
+		dsn = conf.DBDsn
 	}
 
 	flag.Parse()
 
 	conf.Port = port
 	conf.FileStoragePath = strings.TrimSuffix(filePath, "/") + "/wall.txt"
-	conf.DbDsn = dsn
+	conf.DBDsn = dsn
 	conf.StoreInterval = &interval
 	conf.Restore = &restore
 

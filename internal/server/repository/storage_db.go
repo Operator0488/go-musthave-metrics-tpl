@@ -136,6 +136,10 @@ func (m *PostgresStorage) GetValues(ctx context.Context) (map[string]any, error)
 		}
 	}
 
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("ошибка при иттерации rows: %w", err)
+	}
+
 	err = rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("ошибка получения значений %w", err)
