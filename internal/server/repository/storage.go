@@ -290,12 +290,12 @@ func (m *Maps) SaveValues(ctx context.Context, reqs []models.PostUpdateRequest) 
 		case models.Gauge:
 			err := m.SaveValue(ctx, req.ID, *req.Value)
 			if err != nil {
-				errs = append(errs, fmt.Errorf("ошибка сохранения %s, %s, %s: %w", req.ID, *req.Value, req.MType, err))
+				errs = append(errs, fmt.Errorf("ошибка сохранения %s, %v, %s: %w", req.ID, *req.Value, req.MType, err))
 			}
 		case models.Counter:
 			err := m.IncrementValue(ctx, req.ID, *req.Delta)
 			if err != nil {
-				errs = append(errs, fmt.Errorf("ошибка сохранения %s, %s, %s: %w", req.ID, *req.Delta, req.MType, err))
+				errs = append(errs, fmt.Errorf("ошибка сохранения %s, %v, %s: %w", req.ID, *req.Delta, req.MType, err))
 			}
 		}
 

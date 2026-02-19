@@ -5,16 +5,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"net/http/httptest"
-	"testing"
-
 	mocklog "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger/mocks"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
 	mockserv "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/service/mocks"
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
+	"net/http"
+	"net/http/httptest"
+	"testing"
 )
 
 func withChiParams(r *http.Request, params map[string]string) *http.Request {
@@ -37,7 +36,7 @@ func TestStorageHandler_GetValue_ValueOK(t *testing.T) {
 	resp := models.GetValueResponse{Value: &val}
 
 	svc.EXPECT().
-		SenderGetValue(models.GetValueRequest{MType: models.Gauge, ID: "cpu"}).
+		SenderGetValue(gomock.Any(), models.GetValueRequest{MType: models.Gauge, ID: "cpu"}).
 		Return(resp, nil)
 
 	req := httptest.NewRequest(http.MethodGet, "/value/gauge/cpu", nil)
@@ -90,7 +89,7 @@ func TestStorageHandler_GetValues_OK(t *testing.T) {
 	}
 
 	svc.EXPECT().
-		SenderGetValues().
+		SenderGetValues(gomock.Any()).
 		Return(mapa, nil)
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -114,11 +113,13 @@ func TestStorageHandler_PostUpdate_OK(t *testing.T) {
 	h := NewStorageHandler(log, svc)
 
 	svc.EXPECT().
-		SenderPostUpdate(models.PostUpdateRequest{
-			MType:    models.Counter,
-			ID:       "hits",
-			ValueStr: "10",
-		}).
+		SenderPostUpdate(
+			gomock.Any(),
+			models.PostUpdateRequest{
+				MType:    models.Counter,
+				ID:       "hits",
+				ValueStr: "10",
+			}).
 		Return(nil)
 
 	req := httptest.NewRequest(http.MethodPost, "/update/counter/hits/10", nil)
@@ -171,7 +172,9 @@ func TestStorageHandler_PostUpdateWithBody_OK(t *testing.T) {
 	b, _ := json.Marshal(body)
 
 	svc.EXPECT().
-		SenderPostUpdate(body).
+		SenderPostUpdate(
+			gomock.Any(),
+			body).
 		Return(nil)
 
 	req := httptest.NewRequest(http.MethodPost, "/update/", bytes.NewBuffer(b))
@@ -197,7 +200,9 @@ func TestStorageHandler_PostValueWithBody_OK(t *testing.T) {
 	resp := models.GetValueResponse{Delta: &d}
 
 	svc.EXPECT().
-		SenderGetValue(reqModel).
+		SenderGetValue(
+			gomock.Any(),
+			reqModel).
 		Return(resp, nil)
 
 	req := httptest.NewRequest(http.MethodPost, "/value/", bytes.NewBuffer(reqBody))

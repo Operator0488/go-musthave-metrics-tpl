@@ -1,6 +1,13 @@
 package service
 
-import "strconv"
+import (
+	"context"
+	"errors"
+	"github.com/jackc/pgerrcode"
+	"github.com/jackc/pgx/v5/pgconn"
+	"strconv"
+	"time"
+)
 
 func getValueFloat(str string) (float64, error) {
 	return strconv.ParseFloat(str, 64)
@@ -8,4 +15,40 @@ func getValueFloat(str string) (float64, error) {
 
 func getValueInt(str string) (int64, error) {
 	return strconv.ParseInt(str, 10, 64)
+}
+
+func retry(ctx context.Context, fn func() error) error {
+	var err error
+	var timePeriod = []time.Duration{1 * time.Second, 3 * time.Second, 5 * time.Second}
+
+	for _, dur := range timePeriod {
+		if err = fn(); isRetryDB(err) {
+			select {
+			case <-time.After(dur):
+			case <-ctx.Done():
+				return ctx.Err()
+			}
+		} else {
+			break
+		}
+	}
+
+	return err
+}
+
+func isRetryDB(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+		return false
+	}
+
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) && pgErr.Code == pgerrcode.UniqueViolation {
+		return false
+	}
+
+	return true
 }

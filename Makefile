@@ -1,6 +1,6 @@
 .PHONY: test1 test2 test3 test4 test5 test6 test7 test8 test9
 test1:
-	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration1 \
+	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration1$$ \
       -binary-path=cmd/server/server \
       -source-path=.
 
@@ -52,6 +52,8 @@ test8:
             -source-path=.
 
 test9:
+	@go build -o cmd/agent/agent cmd/agent/*.go
+	@go build -o cmd/server/server cmd/server/*.go
 	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration9$ \
     	-agent-binary-path=cmd/agent/agent \
         -binary-path=cmd/server/server \
@@ -60,6 +62,7 @@ test9:
         -source-path=.
 
 test10:
+	@docker-compose up -d
 	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration10[AB]$ \
     	-agent-binary-path=cmd/agent/agent \
         -binary-path=cmd/server/server \
@@ -69,6 +72,9 @@ test10:
         -source-path=.
 
 test11:
+	@docker-compose up -d
+	@go build -o cmd/agent/agent cmd/agent/*.go
+	@go build -o cmd/server/server cmd/server/*.go
 	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration11$ \
     	-agent-binary-path=cmd/agent/agent \
         -binary-path=cmd/server/server \
@@ -77,9 +83,21 @@ test11:
         -source-path=.
 
 test12:
+	@docker-compose up -d
 	@go build -o cmd/agent/agent cmd/agent/*.go
 	@go build -o cmd/server/server cmd/server/*.go
 	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration12$ \
+    	-agent-binary-path=cmd/agent/agent \
+        -binary-path=cmd/server/server \
+        -database-dsn='postgres://postgres:yourpasswords@localhost:5432/postgres?sslmode=disable' \
+      	-server-port=8080 \
+        -source-path=.
+
+test13:
+	@docker-compose up -d
+	@go build -o cmd/agent/agent cmd/agent/*.go
+	@go build -o cmd/server/server cmd/server/*.go
+	./metricstest-darwin-arm64 -test.v -test.run=^TestIteration13$ \
     	-agent-binary-path=cmd/agent/agent \
         -binary-path=cmd/server/server \
         -database-dsn='postgres://postgres:yourpasswords@localhost:5432/postgres?sslmode=disable' \

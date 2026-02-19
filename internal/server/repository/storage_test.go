@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	mocklog "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger/mocks"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
 	"github.com/stretchr/testify/require"
@@ -36,14 +37,14 @@ func TestMaps_SaverValue_NewGauge_OK(t *testing.T) {
 		Info(gomock.Any(), gomock.Any()).
 		AnyTimes()
 
-	m, err := NewMaps(log, false, path, 0)
+	m, err := NewMaps(context.Background(), log, false, path, 0)
 	require.NoError(t, err)
 	defer m.file.Close()
 
-	err = m.SaverValue("LastGc", 12.34)
+	err = m.SaveValue(context.Background(), "LastGc", 12.34)
 	require.NoError(t, err)
 
-	got, err := m.GetValueGauge("LastGc")
+	got, err := m.GetValueGauge(context.Background(), "LastGc")
 	require.NoError(t, err)
 	require.Equal(t, 12.34, got)
 }
@@ -61,7 +62,7 @@ func TestMaps_SaverValue_TypeMismatch(t *testing.T) {
 		Info(gomock.Any(), gomock.Any()).
 		AnyTimes()
 
-	m, err := NewMaps(log, false, path, 0)
+	m, err := NewMaps(context.Background(), log, false, path, 0)
 	require.NoError(t, err)
 	defer m.file.Close()
 
@@ -72,7 +73,7 @@ func TestMaps_SaverValue_TypeMismatch(t *testing.T) {
 		Delta: 10,
 	}
 
-	err = m.SaverValue("LastGc", 1.0)
+	err = m.SaveValue(context.Background(), "LastGc", 1.0)
 	require.ErrorIs(t, err, models.ErrorDiffType)
 }
 
@@ -89,14 +90,14 @@ func TestMaps_IncrementValue_NewCounter_OK(t *testing.T) {
 		Info(gomock.Any(), gomock.Any()).
 		AnyTimes()
 
-	m, err := NewMaps(log, false, path, 0)
+	m, err := NewMaps(context.Background(), log, false, path, 0)
 	require.NoError(t, err)
 	defer m.file.Close()
 
-	require.NoError(t, m.IncrementValue("Lastgc", 10))
-	require.NoError(t, m.IncrementValue("Lastgc", 5))
+	require.NoError(t, m.IncrementValue(context.Background(), "Lastgc", 10))
+	require.NoError(t, m.IncrementValue(context.Background(), "Lastgc", 5))
 
-	got, err := m.GetValueCounter("Lastgc")
+	got, err := m.GetValueCounter(context.Background(), "Lastgc")
 	require.NoError(t, err)
 	require.Equal(t, int64(15), got)
 }
@@ -114,7 +115,7 @@ func TestMaps_IncrementValue_TypeMismatch(t *testing.T) {
 		Info(gomock.Any(), gomock.Any()).
 		AnyTimes()
 
-	m, err := NewMaps(log, false, path, 0)
+	m, err := NewMaps(context.Background(), log, false, path, 0)
 	require.NoError(t, err)
 	defer m.file.Close()
 
@@ -124,7 +125,7 @@ func TestMaps_IncrementValue_TypeMismatch(t *testing.T) {
 		Value: 1.23,
 	}
 
-	err = m.IncrementValue("Lastgc", 1)
+	err = m.IncrementValue(context.Background(), "Lastgc", 1)
 	require.ErrorIs(t, err, models.ErrorGetValue)
 }
 
@@ -141,14 +142,14 @@ func TestMaps_GetValue_NotFound(t *testing.T) {
 		Info(gomock.Any(), gomock.Any()).
 		AnyTimes()
 
-	m, err := NewMaps(log, false, path, 0)
+	m, err := NewMaps(context.Background(), log, false, path, 0)
 	require.NoError(t, err)
 	defer m.file.Close()
 
-	_, err = m.GetValueGauge("Lastgc")
+	_, err = m.GetValueGauge(context.Background(), "Lastgc")
 	require.ErrorIs(t, err, models.ErrorNotDB)
 
-	_, err = m.GetValueCounter("Lastgc")
+	_, err = m.GetValueCounter(context.Background(), "Lastgc")
 	require.ErrorIs(t, err, models.ErrorNotDB)
 }
 
@@ -165,14 +166,14 @@ func TestMaps_GetValues_OK(t *testing.T) {
 		Info(gomock.Any(), gomock.Any()).
 		AnyTimes()
 
-	m, err := NewMaps(log, false, path, 0)
+	m, err := NewMaps(context.Background(), log, false, path, 0)
 	require.NoError(t, err)
 	defer m.file.Close()
 
-	require.NoError(t, m.SaverValue("Lastgc", 1.5))
-	require.NoError(t, m.IncrementValue("Lastgc2", 7))
+	require.NoError(t, m.SaveValue(context.Background(), "Lastgc", 1.5))
+	require.NoError(t, m.IncrementValue(context.Background(), "Lastgc2", 7))
 
-	all, err := m.GetValues()
+	all, err := m.GetValues(context.Background())
 	require.NoError(t, err)
 
 	require.Equal(t, 1.5, all["Lastgc"])
@@ -192,7 +193,7 @@ func TestMaps_GetValues_UnknownType(t *testing.T) {
 		Info(gomock.Any(), gomock.Any()).
 		AnyTimes()
 
-	m, err := NewMaps(log, false, path, 0)
+	m, err := NewMaps(context.Background(), log, false, path, 0)
 	require.NoError(t, err)
 	defer m.file.Close()
 
@@ -201,7 +202,7 @@ func TestMaps_GetValues_UnknownType(t *testing.T) {
 		MType: "Lastgc",
 	}
 
-	_, err = m.GetValues()
+	_, err = m.GetValues(context.Background())
 	require.ErrorIs(t, err, models.ErrorUnType)
 }
 
@@ -218,31 +219,31 @@ func TestMaps_PersistAndRestore_FromFile(t *testing.T) {
 		Info(gomock.Any(), gomock.Any()).
 		AnyTimes()
 
-	m1, err := NewMaps(log, false, path, 0)
+	m1, err := NewMaps(context.Background(), log, false, path, 0)
 	require.NoError(t, err)
-	require.NoError(t, m1.SaverValue("Lastgc", 9.99))
-	require.NoError(t, m1.SaverValue("Lastgc", 5.99))
-	require.NoError(t, m1.IncrementValue("Lastgc2", 10))
-	require.NoError(t, m1.IncrementValue("Lastgc2", 5))
+	require.NoError(t, m1.SaveValue(context.Background(), "Lastgc", 9.99))
+	require.NoError(t, m1.SaveValue(context.Background(), "Lastgc", 5.99))
+	require.NoError(t, m1.IncrementValue(context.Background(), "Lastgc2", 10))
+	require.NoError(t, m1.IncrementValue(context.Background(), "Lastgc2", 5))
 	require.NoError(t, m1.file.Close())
 
-	gotCounter, err := m1.GetValueCounter("Lastgc2")
+	gotCounter, err := m1.GetValueCounter(context.Background(), "Lastgc2")
 	require.NoError(t, err)
 	require.Equal(t, int64(15), gotCounter)
 
-	gotGauge, err := m1.GetValueGauge("Lastgc")
+	gotGauge, err := m1.GetValueGauge(context.Background(), "Lastgc")
 	require.NoError(t, err)
 	require.Equal(t, 5.99, gotGauge)
 
-	m2, err := NewMaps(log, true, path, 0)
+	m2, err := NewMaps(context.Background(), log, true, path, 0)
 	require.NoError(t, err)
 	defer m2.file.Close()
 
-	gotGauge, err = m2.GetValueGauge("Lastgc")
+	gotGauge, err = m2.GetValueGauge(context.Background(), "Lastgc")
 	require.NoError(t, err)
 	require.Equal(t, 5.99, gotGauge)
 
-	gotCounter, err = m2.GetValueCounter("Lastgc2")
+	gotCounter, err = m2.GetValueCounter(context.Background(), "Lastgc2")
 	require.NoError(t, err)
 	require.Equal(t, int64(15), gotCounter)
 }

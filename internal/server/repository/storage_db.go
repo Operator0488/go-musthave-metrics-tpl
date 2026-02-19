@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
@@ -26,14 +25,35 @@ func NewPostgresStorage(log logger.Logger, db *sql.DB) (*PostgresStorage, error)
 	return store, nil
 }
 
-func (m *PostgresStorage) SaveValue(ctx context.Context, s string, f float64) error {
-	//noinspection SqlResolve
-	query := `INSERT INTO metrics (id, type, value) VALUES ($1, 'gauge', $2) ON CONFLICT (id) 
-    DO UPDATE SET 
-                value = EXCLUDED.value, delta = NULL
-    			WHERE metrics.type = 'gauge';`
+// noinspection SqlResolve
+const (
+	qInsertGauge = `
+INSERT INTO metrics (id, type, value)
+VALUES ($1, 'gauge', $2)
+ON CONFLICT (id) DO UPDATE
+SET value = EXCLUDED.value, delta = NULL
+WHERE metrics.type = 'gauge';
+`
+	qInsertCounter = `
+INSERT INTO metrics (id, type, delta)
+VALUES ($1, 'counter', $2)
+ON CONFLICT (id) DO UPDATE
+SET delta = metrics.delta + EXCLUDED.delta, value = NULL
+WHERE metrics.type = 'counter';
+`
+	qSelectCounter = `
+SELECT type, delta FROM metrics WHERE id=$1;
+`
+	qSelectGauge = `
+SELECT type, value FROM metrics WHERE id=$1;
+`
+	qSelectAll = `
+SELECT id, type, value, delta FROM metrics
+`
+)
 
-	res, err := m.db.ExecContext(ctx, query, s, f)
+func (m *PostgresStorage) SaveValue(ctx context.Context, s string, f float64) error {
+	res, err := m.db.ExecContext(ctx, qInsertGauge, s, f)
 	if err != nil {
 		return fmt.Errorf("ошибка сохранения значения gauge: %w", err)
 	}
@@ -47,13 +67,7 @@ func (m *PostgresStorage) SaveValue(ctx context.Context, s string, f float64) er
 }
 
 func (m *PostgresStorage) IncrementValue(ctx context.Context, s string, i int64) error {
-	//noinspection SqlResolve
-	query := `INSERT INTO metrics (id, type, delta) VALUES ($1, 'counter', $2) ON CONFLICT (id) 
-    DO UPDATE SET 
-                delta = metrics.delta + EXCLUDED.delta, value = NULL
-    			WHERE metrics.type = 'counter';`
-
-	res, err := m.db.ExecContext(ctx, query, s, i)
+	res, err := m.db.ExecContext(ctx, qInsertCounter, s, i)
 	if err != nil {
 		return fmt.Errorf("ошибка сохранения значения counter: %w", err)
 	}
@@ -67,12 +81,9 @@ func (m *PostgresStorage) IncrementValue(ctx context.Context, s string, i int64)
 }
 
 func (m *PostgresStorage) GetValueGauge(ctx context.Context, s string) (float64, error) {
-	//noinspection SqlResolve
-	query := `SELECT type, value FROM metrics WHERE id=$1;`
-
 	var t string
 	var f float64
-	err := m.db.QueryRowContext(ctx, query, s).Scan(&t, &f)
+	err := m.db.QueryRowContext(ctx, qSelectGauge, s).Scan(&t, &f)
 	if err != nil {
 		return 0, fmt.Errorf("ошибка получения значения gauge: %w", err)
 	}
@@ -85,12 +96,9 @@ func (m *PostgresStorage) GetValueGauge(ctx context.Context, s string) (float64,
 }
 
 func (m *PostgresStorage) GetValueCounter(ctx context.Context, s string) (int64, error) {
-	//noinspection SqlResolve
-	query := `SELECT type, delta FROM metrics WHERE id=$1;`
-
 	var t string
 	var f int64
-	err := m.db.QueryRowContext(ctx, query, s).Scan(&t, &f)
+	err := m.db.QueryRowContext(ctx, qSelectCounter, s).Scan(&t, &f)
 	if err != nil {
 		return 0, fmt.Errorf("ошибка получения значения counter: %w", err)
 	}
@@ -103,10 +111,7 @@ func (m *PostgresStorage) GetValueCounter(ctx context.Context, s string) (int64,
 }
 
 func (m *PostgresStorage) GetValues(ctx context.Context) (map[string]any, error) {
-	//noinspection SqlResolve
-	query := `SELECT id, type, value, delta FROM metrics`
-
-	rows, err := m.db.QueryContext(ctx, query)
+	rows, err := m.db.QueryContext(ctx, qSelectAll)
 	if err != nil {
 		return nil, fmt.Errorf("ошибка получения значений %w", err)
 	}
@@ -147,61 +152,65 @@ func (m *PostgresStorage) PingDB(ctx context.Context) error {
 	return nil
 }
 
-func (m *PostgresStorage) SaveValues(ctx context.Context, reqs []models.PostUpdateRequest) error {
+func (m *PostgresStorage) SaveValues(ctx context.Context, reqs []models.PostUpdateRequest) (err error) {
 	tx, err := m.db.Begin()
 	if err != nil {
 		return fmt.Errorf("ошибка начала транзакции: %w", err)
 	}
 
+	defer func() {
+		if err != nil {
+			_ = tx.Rollback()
+			return
+		}
+
+		err = tx.Commit()
+		if err != nil {
+			err = fmt.Errorf("ошибка коммита: %w", err)
+		}
+	}()
+
 	for _, req := range reqs {
 		switch req.MType {
 		case models.Gauge:
-			//noinspection SqlResolve
-			query := `INSERT INTO metrics (id, type, value) VALUES ($1, 'gauge', $2) ON CONFLICT (id) 
-    DO UPDATE SET 
-                value = EXCLUDED.value, delta = NULL
-    			WHERE metrics.type = 'gauge';`
 
-			_, err := tx.ExecContext(ctx,
-				query, req.ID, req.Value)
-
-			if err != nil {
-				var errs error
-				er := tx.Rollback()
-				if er != nil {
-					errs = errors.Join(fmt.Errorf("ошибка начала транзакции: %w", err), fmt.Errorf("ошибка отмены транзакции: %w", er))
-				} else {
-					errs = fmt.Errorf("ошибка начала транзакции: %w", err)
-				}
-				return errs
+			if req.Value == nil {
+				return fmt.Errorf("ошибка записи gauge %q: нет значения", req.ID)
 			}
+			res, e := tx.ExecContext(ctx,
+				qInsertGauge, req.ID, req.Value)
+
+			if e != nil {
+				return fmt.Errorf("ошибка записи gauge %q: %w", req.ID, e)
+			}
+
+			rows, _ := res.RowsAffected()
+			if rows == 0 {
+				return fmt.Errorf("%w: %q ожидали gauge", models.ErrorUnType, req.ID)
+			}
+
 		case models.Counter:
-			//noinspection SqlResolve
-			query := `INSERT INTO metrics (id, type, delta) VALUES ($1, 'counter', $2) ON CONFLICT (id) 
-    DO UPDATE SET 
-                delta = metrics.delta + EXCLUDED.delta, value = NULL
-    			WHERE metrics.type = 'counter';`
 
-			_, err := tx.ExecContext(ctx,
-				query, req.ID, req.Delta)
-
-			if err != nil {
-				var errs error
-				er := tx.Rollback()
-				if er != nil {
-					errs = errors.Join(fmt.Errorf("ошибка начала транзакции: %w", err), fmt.Errorf("ошибка отмены транзакции: %w", er))
-				} else {
-					errs = fmt.Errorf("ошибка начала транзакции: %w", err)
-				}
-				return errs
+			if req.Delta == nil {
+				return fmt.Errorf("ошибка записи counter %q: нет значения", req.ID)
 			}
+
+			res, e := tx.ExecContext(ctx,
+				qInsertCounter, req.ID, req.Delta)
+
+			if e != nil {
+				return fmt.Errorf("ошибка записи counter %q: %w", req.ID, e)
+			}
+
+			rows, _ := res.RowsAffected()
+			if rows == 0 {
+				return fmt.Errorf("%w: %q ожидали сounter", models.ErrorUnType, req.ID)
+			}
+
+		default:
+			return models.ErrorUnType
 		}
 
-	}
-
-	err = tx.Commit()
-	if err != nil {
-		return fmt.Errorf("ошибка при коммите: %w", err)
 	}
 
 	return nil

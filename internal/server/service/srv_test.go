@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	mocklog "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger/mocks"
@@ -60,9 +61,9 @@ func TestStorageService_SenderGetValues(t *testing.T) {
 
 	want := map[string]any{"lastgc": 1.5, "count": int64(7)}
 
-	st.EXPECT().GetValues().Return(want, nil)
+	st.EXPECT().GetValues(gomock.Any()).Return(want, nil)
 
-	got, err := svc.SenderGetValues()
+	got, err := svc.SenderGetValues(context.Background())
 	require.NoError(t, err)
 	require.Equal(t, want, got)
 }
@@ -80,12 +81,13 @@ func TestStorageService_SenderGetValue_Gauge_OK(t *testing.T) {
 	st := mocks.NewMockMemStorage(ctrl)
 	svc := NewStorageService(log, st)
 
-	st.EXPECT().GetValueGauge("lastgc").Return(12.34, nil)
+	st.EXPECT().GetValueGauge(gomock.Any(), "lastgc").Return(12.34, nil)
 
-	res, err := svc.SenderGetValue(models.GetValueRequest{
-		ID:    "lastgc",
-		MType: models.Gauge,
-	})
+	res, err := svc.SenderGetValue(context.Background(),
+		models.GetValueRequest{
+			ID:    "lastgc",
+			MType: models.Gauge,
+		})
 	require.NoError(t, err)
 	require.Equal(t, "lastgc", res.ID)
 	require.Equal(t, models.Gauge, res.MType)
@@ -107,12 +109,13 @@ func TestStorageService_SenderGetValue_Counter_OK(t *testing.T) {
 	st := mocks.NewMockMemStorage(ctrl)
 	svc := NewStorageService(log, st)
 
-	st.EXPECT().GetValueCounter("count").Return(int64(42), nil)
+	st.EXPECT().GetValueCounter(gomock.Any(), "count").Return(int64(42), nil)
 
-	res, err := svc.SenderGetValue(models.GetValueRequest{
-		ID:    "count",
-		MType: models.Counter,
-	})
+	res, err := svc.SenderGetValue(context.Background(),
+		models.GetValueRequest{
+			ID:    "count",
+			MType: models.Counter,
+		})
 	require.NoError(t, err)
 	require.Equal(t, "count", res.ID)
 	require.Equal(t, models.Counter, res.MType)
@@ -135,12 +138,13 @@ func TestStorageService_SenderGetValue_StorageError(t *testing.T) {
 	svc := NewStorageService(log, st)
 
 	wantErr := errors.New("down")
-	st.EXPECT().GetValueGauge("lastgc").Return(0.0, wantErr)
+	st.EXPECT().GetValueGauge(gomock.Any(), "lastgc").Return(0.0, wantErr)
 
-	_, err := svc.SenderGetValue(models.GetValueRequest{
-		ID:    "lastgc",
-		MType: models.Gauge,
-	})
+	_, err := svc.SenderGetValue(context.Background(),
+		models.GetValueRequest{
+			ID:    "lastgc",
+			MType: models.Gauge,
+		})
 	require.ErrorIs(t, err, wantErr)
 }
 
@@ -157,10 +161,11 @@ func TestStorageService_SenderGetValue_BadType(t *testing.T) {
 	st := mocks.NewMockMemStorage(ctrl)
 	svc := NewStorageService(log, st)
 
-	_, err := svc.SenderGetValue(models.GetValueRequest{
-		ID:    "x",
-		MType: "xx",
-	})
+	_, err := svc.SenderGetValue(context.Background(),
+		models.GetValueRequest{
+			ID:    "x",
+			MType: "xx",
+		})
 	require.Error(t, err)
 }
 
@@ -177,13 +182,14 @@ func TestStorageService_SenderPostUpdate_Gauge_FromValueStr_OK(t *testing.T) {
 	st := mocks.NewMockMemStorage(ctrl)
 	svc := NewStorageService(log, st)
 
-	st.EXPECT().SaverValue("lastgc", 1.25).Return(nil)
+	st.EXPECT().SaveValue(gomock.Any(), "lastgc", 1.25).Return(nil)
 
-	err := svc.SenderPostUpdate(models.PostUpdateRequest{
-		ID:       "lastgc",
-		MType:    models.Gauge,
-		ValueStr: "1.25",
-	})
+	err := svc.SenderPostUpdate(context.Background(),
+		models.PostUpdateRequest{
+			ID:       "lastgc",
+			MType:    models.Gauge,
+			ValueStr: "1.25",
+		})
 	require.NoError(t, err)
 }
 
@@ -201,13 +207,14 @@ func TestStorageService_SenderPostUpdate_Gauge_FromValuePtr_OK(t *testing.T) {
 	svc := NewStorageService(log, st)
 
 	v := 9.99
-	st.EXPECT().SaverValue("lastgc", 9.99).Return(nil)
+	st.EXPECT().SaveValue(gomock.Any(), "lastgc", 9.99).Return(nil)
 
-	err := svc.SenderPostUpdate(models.PostUpdateRequest{
-		ID:    "lastgc",
-		MType: models.Gauge,
-		Value: &v,
-	})
+	err := svc.SenderPostUpdate(context.Background(),
+		models.PostUpdateRequest{
+			ID:    "lastgc",
+			MType: models.Gauge,
+			Value: &v,
+		})
 	require.NoError(t, err)
 }
 
@@ -224,11 +231,12 @@ func TestStorageService_SenderPostUpdate_Gauge_ParseError(t *testing.T) {
 	st := mocks.NewMockMemStorage(ctrl)
 	svc := NewStorageService(log, st)
 
-	err := svc.SenderPostUpdate(models.PostUpdateRequest{
-		ID:       "lastgc",
-		MType:    models.Gauge,
-		ValueStr: "notfloat",
-	})
+	err := svc.SenderPostUpdate(context.Background(),
+		models.PostUpdateRequest{
+			ID:       "lastgc",
+			MType:    models.Gauge,
+			ValueStr: "notfloat",
+		})
 	require.Error(t, err)
 }
 
@@ -245,10 +253,11 @@ func TestStorageService_SenderPostUpdate_Gauge_StrangeRequest(t *testing.T) {
 	st := mocks.NewMockMemStorage(ctrl)
 	svc := NewStorageService(log, st)
 
-	err := svc.SenderPostUpdate(models.PostUpdateRequest{
-		ID:    "lastgc",
-		MType: models.Gauge,
-	})
+	err := svc.SenderPostUpdate(context.Background(),
+		models.PostUpdateRequest{
+			ID:    "lastgc",
+			MType: models.Gauge,
+		})
 	require.Error(t, err)
 }
 
@@ -265,13 +274,14 @@ func TestStorageService_SenderPostUpdate_Counter_FromValueStr_OK(t *testing.T) {
 	st := mocks.NewMockMemStorage(ctrl)
 	svc := NewStorageService(log, st)
 
-	st.EXPECT().IncrementValue("count", int64(10)).Return(nil)
+	st.EXPECT().IncrementValue(gomock.Any(), "count", int64(10)).Return(nil)
 
-	err := svc.SenderPostUpdate(models.PostUpdateRequest{
-		ID:       "count",
-		MType:    models.Counter,
-		ValueStr: "10",
-	})
+	err := svc.SenderPostUpdate(context.Background(),
+		models.PostUpdateRequest{
+			ID:       "count",
+			MType:    models.Counter,
+			ValueStr: "10",
+		})
 	require.NoError(t, err)
 }
 
@@ -289,13 +299,14 @@ func TestStorageService_SenderPostUpdate_Counter_FromDeltaPtr_OK(t *testing.T) {
 	svc := NewStorageService(log, st)
 
 	d := int64(7)
-	st.EXPECT().IncrementValue("count", int64(7)).Return(nil)
+	st.EXPECT().IncrementValue(gomock.Any(), "count", int64(7)).Return(nil)
 
-	err := svc.SenderPostUpdate(models.PostUpdateRequest{
-		ID:    "count",
-		MType: models.Counter,
-		Delta: &d,
-	})
+	err := svc.SenderPostUpdate(context.Background(),
+		models.PostUpdateRequest{
+			ID:    "count",
+			MType: models.Counter,
+			Delta: &d,
+		})
 	require.NoError(t, err)
 }
 
@@ -312,9 +323,10 @@ func TestStorageService_SenderPostUpdate_BadType(t *testing.T) {
 	st := mocks.NewMockMemStorage(ctrl)
 	svc := NewStorageService(log, st)
 
-	err := svc.SenderPostUpdate(models.PostUpdateRequest{
-		ID:    "x",
-		MType: "xx",
-	})
+	err := svc.SenderPostUpdate(context.Background(),
+		models.PostUpdateRequest{
+			ID:    "x",
+			MType: "xx",
+		})
 	require.Error(t, err)
 }

@@ -55,10 +55,11 @@ func (c *ClientResty) SendRequest() {
 			req.Delta = &node
 		}
 
-		resp, err := c.cli.R().
-			SetHeader("Content-Type", "application/json").
-			SetBody(req).
-			Post(fmt.Sprintf("http://%s/update/", c.conf.Port))
+		resp, err := Retry(
+			c.cli.R().
+				SetHeader("Content-Type", "application/json").SetBody(req),
+			fmt.Sprintf("http://%s/update/", c.conf.Port),
+		)
 
 		if err != nil {
 			status := 0
@@ -92,10 +93,11 @@ func (c *ClientResty) SendRequestBatch() {
 		reqs = append(reqs, req)
 	}
 
-	resp, err := c.cli.R().
-		SetHeader("Content-Type", "application/json").
-		SetBody(reqs).
-		Post(fmt.Sprintf("http://%s/updates/", c.conf.Port))
+	resp, err := Retry(
+		c.cli.R().
+			SetHeader("Content-Type", "application/json").SetBody(reqs),
+		fmt.Sprintf("http://%s/updates/", c.conf.Port),
+	)
 
 	if err != nil {
 		status := 0

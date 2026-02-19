@@ -48,7 +48,7 @@ func run(ctx context.Context, conf config.AgentConfig) error {
 	for {
 		select {
 		case <-reportTicker.C:
-			client.SendRequestBatch()
+			client.SendRequest()
 		case <-pollTicker.C:
 			mn.WriteStats()
 		}

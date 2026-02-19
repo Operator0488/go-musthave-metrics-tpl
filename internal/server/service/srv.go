@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
@@ -102,56 +101,18 @@ func (s *StorageService) SenderPostUpdate(ctx context.Context, req models.PostUp
 }
 
 func (s *StorageService) SenderPostUpdates(ctx context.Context, reqs []models.PostUpdateRequest) error {
-	var errs []error
 
-	valid := make([]models.PostUpdateRequest, 0, len(reqs))
+	err := retry(
+		ctx,
+		func() error {
+			return s.storage.SaveValues(ctx, reqs)
+		},
+	)
 
-	for i, req := range reqs {
-		var err error
-
-		switch req.MType {
-
-		case models.Gauge:
-			if req.ValueStr != "" && req.Value == nil {
-				val, e := getValueFloat(req.ValueStr)
-				if e != nil {
-					err = e
-					reqs = append(reqs[:i], reqs[i+1:]...)
-					continue
-				}
-				req.Value = &val
-			}
-			valid = append(valid, req)
-
-		case models.Counter:
-			if req.ValueStr != "" && req.Delta == nil {
-				val, e := getValueInt(req.ValueStr)
-				if e != nil {
-					err = e
-					continue
-				}
-				req.Delta = &val
-			}
-			valid = append(valid, req)
-
-		default:
-			err = fmt.Errorf("ошибка, нет подходящего типа")
-
-		}
-
-		if err != nil {
-			errs = append(errs, fmt.Errorf("не записаны %q (%s) ошибка: %w", req.ID, req.MType, err))
-		}
-	}
-
-	if len(errs) != 0 {
-		return errors.Join(errs...)
-	}
-
-	err := s.storage.SaveValues(ctx, valid)
 	if err != nil {
 		return fmt.Errorf("не удалось сохранить данные: %w", err)
 	}
+
 	return nil
 }
 

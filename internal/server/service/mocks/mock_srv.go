@@ -10,6 +10,7 @@
 package mocks
 
 import (
+	context "context"
 	reflect "reflect"
 
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
@@ -40,46 +41,74 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 	return m.recorder
 }
 
-// SenderGetValue mocks base method.
-func (m *MockService) SenderGetValue(req models.GetValueRequest) (models.GetValueResponse, error) {
+// PingDB mocks base method.
+func (m *MockService) PingDB(ctx context.Context) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SenderGetValue", req)
+	ret := m.ctrl.Call(m, "PingDB", ctx)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// PingDB indicates an expected call of PingDB.
+func (mr *MockServiceMockRecorder) PingDB(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PingDB", reflect.TypeOf((*MockService)(nil).PingDB), ctx)
+}
+
+// SenderGetValue mocks base method.
+func (m *MockService) SenderGetValue(ctx context.Context, req models.GetValueRequest) (models.GetValueResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SenderGetValue", ctx, req)
 	ret0, _ := ret[0].(models.GetValueResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // SenderGetValue indicates an expected call of SenderGetValue.
-func (mr *MockServiceMockRecorder) SenderGetValue(req any) *gomock.Call {
+func (mr *MockServiceMockRecorder) SenderGetValue(ctx, req any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SenderGetValue", reflect.TypeOf((*MockService)(nil).SenderGetValue), req)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SenderGetValue", reflect.TypeOf((*MockService)(nil).SenderGetValue), ctx, req)
 }
 
 // SenderGetValues mocks base method.
-func (m *MockService) SenderGetValues() (map[string]any, error) {
+func (m *MockService) SenderGetValues(ctx context.Context) (map[string]any, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SenderGetValues")
+	ret := m.ctrl.Call(m, "SenderGetValues", ctx)
 	ret0, _ := ret[0].(map[string]any)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // SenderGetValues indicates an expected call of SenderGetValues.
-func (mr *MockServiceMockRecorder) SenderGetValues() *gomock.Call {
+func (mr *MockServiceMockRecorder) SenderGetValues(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SenderGetValues", reflect.TypeOf((*MockService)(nil).SenderGetValues))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SenderGetValues", reflect.TypeOf((*MockService)(nil).SenderGetValues), ctx)
 }
 
 // SenderPostUpdate mocks base method.
-func (m *MockService) SenderPostUpdate(req models.PostUpdateRequest) error {
+func (m *MockService) SenderPostUpdate(ctx context.Context, req models.PostUpdateRequest) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SenderPostUpdate", req)
+	ret := m.ctrl.Call(m, "SenderPostUpdate", ctx, req)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // SenderPostUpdate indicates an expected call of SenderPostUpdate.
-func (mr *MockServiceMockRecorder) SenderPostUpdate(req any) *gomock.Call {
+func (mr *MockServiceMockRecorder) SenderPostUpdate(ctx, req any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SenderPostUpdate", reflect.TypeOf((*MockService)(nil).SenderPostUpdate), req)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SenderPostUpdate", reflect.TypeOf((*MockService)(nil).SenderPostUpdate), ctx, req)
+}
+
+// SenderPostUpdates mocks base method.
+func (m *MockService) SenderPostUpdates(ctx context.Context, req []models.PostUpdateRequest) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SenderPostUpdates", ctx, req)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SenderPostUpdates indicates an expected call of SenderPostUpdates.
+func (mr *MockServiceMockRecorder) SenderPostUpdates(ctx, req any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SenderPostUpdates", reflect.TypeOf((*MockService)(nil).SenderPostUpdates), ctx, req)
 }

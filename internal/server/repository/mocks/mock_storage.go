@@ -10,6 +10,7 @@
 package mocks
 
 import (
+	context "context"
 	reflect "reflect"
 
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
@@ -40,103 +41,103 @@ func (m *MockMemStorage) EXPECT() *MockMemStorageMockRecorder {
 	return m.recorder
 }
 
-// AddData mocks base method.
-func (m *MockMemStorage) AddData(arg0 models.MetricStore) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddData", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// AddData indicates an expected call of AddData.
-func (mr *MockMemStorageMockRecorder) AddData(arg0 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddData", reflect.TypeOf((*MockMemStorage)(nil).AddData), arg0)
-}
-
-// GetData mocks base method.
-func (m *MockMemStorage) GetData() error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetData")
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// GetData indicates an expected call of GetData.
-func (mr *MockMemStorageMockRecorder) GetData() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetData", reflect.TypeOf((*MockMemStorage)(nil).GetData))
-}
-
 // GetValueCounter mocks base method.
-func (m *MockMemStorage) GetValueCounter(arg0 string) (int64, error) {
+func (m *MockMemStorage) GetValueCounter(arg0 context.Context, arg1 string) (int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetValueCounter", arg0)
+	ret := m.ctrl.Call(m, "GetValueCounter", arg0, arg1)
 	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetValueCounter indicates an expected call of GetValueCounter.
-func (mr *MockMemStorageMockRecorder) GetValueCounter(arg0 any) *gomock.Call {
+func (mr *MockMemStorageMockRecorder) GetValueCounter(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetValueCounter", reflect.TypeOf((*MockMemStorage)(nil).GetValueCounter), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetValueCounter", reflect.TypeOf((*MockMemStorage)(nil).GetValueCounter), arg0, arg1)
 }
 
 // GetValueGauge mocks base method.
-func (m *MockMemStorage) GetValueGauge(arg0 string) (float64, error) {
+func (m *MockMemStorage) GetValueGauge(arg0 context.Context, arg1 string) (float64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetValueGauge", arg0)
+	ret := m.ctrl.Call(m, "GetValueGauge", arg0, arg1)
 	ret0, _ := ret[0].(float64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetValueGauge indicates an expected call of GetValueGauge.
-func (mr *MockMemStorageMockRecorder) GetValueGauge(arg0 any) *gomock.Call {
+func (mr *MockMemStorageMockRecorder) GetValueGauge(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetValueGauge", reflect.TypeOf((*MockMemStorage)(nil).GetValueGauge), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetValueGauge", reflect.TypeOf((*MockMemStorage)(nil).GetValueGauge), arg0, arg1)
 }
 
 // GetValues mocks base method.
-func (m *MockMemStorage) GetValues() (map[string]any, error) {
+func (m *MockMemStorage) GetValues(arg0 context.Context) (map[string]any, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetValues")
+	ret := m.ctrl.Call(m, "GetValues", arg0)
 	ret0, _ := ret[0].(map[string]any)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetValues indicates an expected call of GetValues.
-func (mr *MockMemStorageMockRecorder) GetValues() *gomock.Call {
+func (mr *MockMemStorageMockRecorder) GetValues(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetValues", reflect.TypeOf((*MockMemStorage)(nil).GetValues))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetValues", reflect.TypeOf((*MockMemStorage)(nil).GetValues), arg0)
 }
 
 // IncrementValue mocks base method.
-func (m *MockMemStorage) IncrementValue(arg0 string, arg1 int64) error {
+func (m *MockMemStorage) IncrementValue(arg0 context.Context, arg1 string, arg2 int64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IncrementValue", arg0, arg1)
+	ret := m.ctrl.Call(m, "IncrementValue", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // IncrementValue indicates an expected call of IncrementValue.
-func (mr *MockMemStorageMockRecorder) IncrementValue(arg0, arg1 any) *gomock.Call {
+func (mr *MockMemStorageMockRecorder) IncrementValue(arg0, arg1, arg2 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncrementValue", reflect.TypeOf((*MockMemStorage)(nil).IncrementValue), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncrementValue", reflect.TypeOf((*MockMemStorage)(nil).IncrementValue), arg0, arg1, arg2)
 }
 
-// SaverValue mocks base method.
-func (m *MockMemStorage) SaverValue(arg0 string, arg1 float64) error {
+// PingDB mocks base method.
+func (m *MockMemStorage) PingDB(arg0 context.Context) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaverValue", arg0, arg1)
+	ret := m.ctrl.Call(m, "PingDB", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SaverValue indicates an expected call of SaverValue.
-func (mr *MockMemStorageMockRecorder) SaverValue(arg0, arg1 any) *gomock.Call {
+// PingDB indicates an expected call of PingDB.
+func (mr *MockMemStorageMockRecorder) PingDB(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaverValue", reflect.TypeOf((*MockMemStorage)(nil).SaverValue), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PingDB", reflect.TypeOf((*MockMemStorage)(nil).PingDB), arg0)
+}
+
+// SaveValue mocks base method.
+func (m *MockMemStorage) SaveValue(arg0 context.Context, arg1 string, arg2 float64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveValue", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SaveValue indicates an expected call of SaveValue.
+func (mr *MockMemStorageMockRecorder) SaveValue(arg0, arg1, arg2 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveValue", reflect.TypeOf((*MockMemStorage)(nil).SaveValue), arg0, arg1, arg2)
+}
+
+// SaveValues mocks base method.
+func (m *MockMemStorage) SaveValues(arg0 context.Context, arg1 []models.PostUpdateRequest) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveValues", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SaveValues indicates an expected call of SaveValues.
+func (mr *MockMemStorageMockRecorder) SaveValues(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveValues", reflect.TypeOf((*MockMemStorage)(nil).SaveValues), arg0, arg1)
 }
