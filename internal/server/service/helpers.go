@@ -41,7 +41,7 @@ func isRetryDB(err error) bool {
 		return false
 	}
 
-	if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+	if errors.Is(err, context.DeadlineExceeded) {
 		return false
 	}
 

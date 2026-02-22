@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"github.com/go-resty/resty/v2"
+	"github.com/jackc/pgx/v5/pgconn"
+	"strings"
 	"time"
 )
 
@@ -26,8 +28,13 @@ func isRetryHTTP(status int, err error) bool {
 		return false
 	}
 
-	if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+	if errors.Is(err, context.DeadlineExceeded) {
 		return true
+	}
+
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) {
+		return strings.HasPrefix(pgErr.Code, "08")
 	}
 
 	switch status {
