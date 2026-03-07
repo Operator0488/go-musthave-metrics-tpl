@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5/pgconn"
-	"net"
 	"strconv"
 	"time"
 )
@@ -45,11 +44,6 @@ func isRetryDB(err error) bool {
 			fmt.Println("Connection error:", pgErr.Code)
 			return true
 		}
-	}
-
-	var netErr net.Error
-	if errors.As(err, &netErr) && netErr.Temporary() {
-		return true
 	}
 
 	return false
