@@ -1,75 +1,105 @@
 package handler
 
 import (
-	"context"
+	"compress/gzip"
+	"encoding/json"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/config"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/model"
-	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/service/mock"
-	"net"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/service/mocks"
+	mocklog "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger/mocks"
+	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
+	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
+	"io"
 	"net/http"
 	"net/http/httptest"
-	"sort"
 	"strings"
+	"sync"
 	"testing"
 )
 
-func asSorted(in []string) []string {
-	cp := append([]string(nil), in...)
-	sort.Strings(cp)
-	return cp
-}
+func TestClientResty_SendRequest_SendsGaugeAndCounter(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-func TestClient_GetRequests(t *testing.T) {
-	mn := &mock.MockManager{
-		M: map[string]*model.Stat{
-			"Alloc": {Type: "gauge", Value: 10.5},
-			"Poll":  {Type: "counter", Value: 7},
-		},
+	log := mocklog.NewMockLogger(ctrl)
+
+	log.EXPECT().
+		Info(gomock.Any(), gomock.Any()).
+		AnyTimes()
+
+	type gotReq struct {
+		Header http.Header
+		Body   models.PostUpdateRequest
 	}
 
-	c := NewClient(context.Background(), mn)
+	var (
+		mu   sync.Mutex
+		got  []gotReq
+		mapa = make(map[string]models.PostUpdateRequest)
+	)
 
-	got := asSorted(c.GetRequests())
-	want := asSorted([]string{
-		"http://127.0.0.1:8080/update/gauge/Alloc/10.5",
-		"http://127.0.0.1:8080/update/counter/Poll/7",
-	})
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		require.Equal(t, http.MethodPost, r.Method)
+		require.Equal(t, "/update/", r.URL.Path)
+		require.Equal(t, "application/json", r.Header.Get("Content-Type"))
 
-	if strings.Join(got, "\n") != strings.Join(want, "\n") {
-		t.Fatalf("unexpected requests:\n got:  %v\n want: %v", got, want)
-	}
-}
+		// тело может быть gzip
+		var b []byte
+		var err error
 
-func TestClient_SendRequest_CollectsErrorsOnNon200(t *testing.T) {
-	ln, err := net.Listen("tcp", "127.0.0.1:8080")
-	if err != nil {
-		t.Skipf("port 8080 is busy on this machine: %v", err)
-	}
-	defer ln.Close()
+		if r.Header.Get("Content-Encoding") == "gzip" {
+			zr, err := gzip.NewReader(r.Body)
+			require.NoError(t, err)
+			defer zr.Close()
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/update/gauge/ok/1", func(w http.ResponseWriter, r *http.Request) {
+			b, err = io.ReadAll(zr)
+			require.NoError(t, err)
+		} else {
+			b, err = io.ReadAll(r.Body)
+			require.NoError(t, err)
+		}
+
+		var req models.PostUpdateRequest
+		require.NoError(t, json.Unmarshal(b, &req))
+
+		mu.Lock()
+		got = append(got, gotReq{Header: r.Header.Clone(), Body: req})
+		mapa[req.ID] = req
+		mu.Unlock()
+
 		w.WriteHeader(http.StatusOK)
-	})
-	mux.HandleFunc("/update/gauge/bad/2", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusInternalServerError)
-	})
-
-	srv := httptest.NewUnstartedServer(mux)
-	srv.Listener = ln
-	srv.Start()
+	}))
 	defer srv.Close()
 
-	mn := &mock.MockManager{
-		M: map[string]*model.Stat{
-			"ok":  {Type: "gauge", Value: 1},
-			"bad": {Type: "gauge", Value: 2},
-		},
-	}
+	hostPort := strings.TrimPrefix(srv.URL, "http://")
 
-	c := NewClient(context.Background(), mn)
+	conf := config.AgentConfig{Port: hostPort}
 
-	errs := c.SendRequest()
-	if len(errs) != 1 {
-		t.Fatalf("expected 1 error, got %d: %+v", len(errs), errs)
-	}
+	mockmng := mocks.NewMockManager(ctrl)
+
+	mockmng.EXPECT().GetMap().Return(map[string]*model.Stat{
+		"lastgc": {Type: "gauge", Value: 12.5},
+		"count":  {Type: "counter", Value: 7}, // Value float64 -> Delta int64(7)
+	})
+
+	c := NewClientResty(log, mockmng, conf)
+
+	c.SendRequest()
+
+	reqCPU, ok := mapa["lastgc"]
+	require.True(t, ok)
+	require.Equal(t, "gauge", reqCPU.MType)
+	require.Equal(t, "lastgc", reqCPU.ID)
+	require.NotNil(t, reqCPU.Value)
+	require.Equal(t, 12.5, *reqCPU.Value)
+	require.Nil(t, reqCPU.Delta)
+
+	reqHits, ok := mapa["count"]
+	require.True(t, ok)
+	require.Equal(t, "counter", reqHits.MType)
+	require.Equal(t, "count", reqHits.ID)
+	require.NotNil(t, reqHits.Delta)
+	require.Equal(t, int64(7), *reqHits.Delta)
+	require.Nil(t, reqHits.Value)
 }

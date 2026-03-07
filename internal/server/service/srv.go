@@ -1,107 +1,121 @@
 package service
 
 import (
+	"context"
 	"fmt"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/repository"
-	"log"
-	"strconv"
 )
 
 type StorageService struct {
 	storage repository.MemStorage
+	log     logger.Logger
 }
 
+//go:generate mockgen -source=srv.go -destination=./mocks/mock_srv.go -package=mocks
 type Service interface {
-	SenderPostUpdate(req *models.PostUpdateRequest) error
-	SenderGetValue(req *models.GetValueRequest) (string, error)
-	SenderGetValues() (map[string]any, error)
+	SenderPostUpdates(ctx context.Context, req []models.PostUpdateRequest) error
+	SenderPostUpdate(ctx context.Context, req models.PostUpdateRequest) error
+	SenderGetValue(ctx context.Context, req models.GetValueRequest) (models.GetValueResponse, error)
+	SenderGetValues(ctx context.Context) (map[string]any, error)
+	PingDB(ctx context.Context) error
 }
 
-func NewStorageService(storage repository.MemStorage) *StorageService {
+func NewStorageService(log logger.Logger, storage repository.MemStorage) *StorageService {
 	return &StorageService{
 		storage: storage,
+		log:     log,
 	}
 }
 
-// SenderGetValues -
-func (s *StorageService) SenderGetValues() (map[string]any, error) {
-	return s.storage.GetValues()
+func (s *StorageService) SenderGetValues(ctx context.Context) (map[string]any, error) {
+	return s.storage.GetValues(ctx)
 }
 
-// SenderGetValue -
-func (s *StorageService) SenderGetValue(req *models.GetValueRequest) (string, error) {
-	switch req.Type {
+func (s *StorageService) SenderGetValue(ctx context.Context, req models.GetValueRequest) (models.GetValueResponse, error) {
+	res := models.GetValueResponse{
+		ID:    req.ID,
+		MType: req.MType,
+	}
+
+	switch req.MType {
 
 	case models.Gauge:
-		log.Println(req.Name)
-		num, err := s.storage.GetValueGauge(req.Name)
+		num, err := s.storage.GetValueGauge(ctx, req.ID)
 		if err != nil {
-			return "", err
+			return res, err
 		}
-		str := getStringFloat(num)
-		if str == "" {
-			return "", fmt.Errorf("Ошибка получения значения")
-		}
-		return str, nil
+		res.Value = &num
+		return res, nil
 
 	case models.Counter:
-		num, err := s.storage.GetValueCounter(req.Name)
+		num, err := s.storage.GetValueCounter(ctx, req.ID)
 		if err != nil {
-			return "", err
+			return res, err
 		}
-		str := getStringInt(num)
-		if str == "" {
-			return "", fmt.Errorf("Ошибка получения значения")
-		}
-		return str, nil
+		res.Delta = &num
+		return res, nil
 
 	default:
-		return "", fmt.Errorf("Ошибка, нет подходящего типа")
-
+		return res, fmt.Errorf("ошибка, нет подходящего типа")
 	}
 }
 
-// SenderPostUpdate -
-func (s *StorageService) SenderPostUpdate(req *models.PostUpdateRequest) error {
+func (s *StorageService) SenderPostUpdate(ctx context.Context, req models.PostUpdateRequest) error {
 
-	switch req.Type {
+	switch req.MType {
 
 	case models.Gauge:
-		val, err := getValueFloat(req.Value)
-		if err != nil {
+		if req.ValueStr != "" && req.Value == nil {
+			val, err := getValueFloat(req.ValueStr)
+			if err != nil {
+				return err
+			}
+			req.Value = &val
+		}
+		if req.Value != nil {
+			err := s.storage.SaveValue(ctx, req.ID, *req.Value)
 			return err
 		}
-		err = s.storage.SaverValue(req.Name, val)
-		return err
+		return fmt.Errorf("ошибка, странный запрос")
 
 	case models.Counter:
-		val, err := getValueInt(req.Value)
-		if err != nil {
+		if req.ValueStr != "" && req.Delta == nil {
+			val, err := getValueInt(req.ValueStr)
+			if err != nil {
+				return err
+			}
+			req.Delta = &val
+		}
+		if req.Delta != nil {
+			err := s.storage.IncrementValue(ctx, req.ID, *req.Delta)
 			return err
 		}
-		err = s.storage.IncrementValue(req.Name, val)
-		return err
+		return fmt.Errorf("ошибка, странный запрос")
 
 	default:
-		return fmt.Errorf("Ошибка, нет подходящего типа")
+		return fmt.Errorf("ошибка, нет подходящего типа")
 
 	}
-
 }
 
-func getValueFloat(str string) (float64, error) {
-	return strconv.ParseFloat(str, 64)
+func (s *StorageService) SenderPostUpdates(ctx context.Context, reqs []models.PostUpdateRequest) error {
+
+	err := retry(
+		ctx,
+		func() error {
+			return s.storage.SaveValues(ctx, reqs)
+		},
+	)
+
+	if err != nil {
+		return fmt.Errorf("не удалось сохранить данные: %w", err)
+	}
+
+	return nil
 }
 
-func getValueInt(str string) (int64, error) {
-	return strconv.ParseInt(str, 10, 64)
-}
-
-func getStringFloat(f float64) string {
-	return strconv.FormatFloat(f, 'f', -1, 64)
-}
-
-func getStringInt(i int64) string {
-	return strconv.FormatInt(i, 10)
+func (s *StorageService) PingDB(ctx context.Context) error {
+	return s.storage.PingDB(ctx)
 }

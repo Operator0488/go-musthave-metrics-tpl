@@ -1,144 +1,50 @@
 package service
 
 import (
-	"context"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/model"
-	"reflect"
-	"sync"
+	"github.com/stretchr/testify/require"
 	"testing"
 )
 
-func TestNewMap(t *testing.T) {
-	tests := []struct {
-		name string
-		want map[string]*model.Stat
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewMap(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewMap() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+func TestNewStatsManager_InitialWriteStatsFillsSomeValues(t *testing.T) {
+	sm := NewStatsManager()
+	require.NotNil(t, sm)
+
+	got := sm.GetMap()
+
+	require.Contains(t, got, model.PollCount)
+	require.NotNil(t, got[model.PollCount])
+	require.Equal(t, "counter", got[model.PollCount].Type)
+	require.Equal(t, float64(1), got[model.PollCount].Value)
+
+	require.Contains(t, got, model.RandomValue)
+	require.NotNil(t, got[model.RandomValue])
+	require.Equal(t, "gauge", got[model.RandomValue].Type)
+	require.GreaterOrEqual(t, got[model.RandomValue].Value, float64(0))
+	require.Less(t, got[model.RandomValue].Value, float64(1))
+
+	require.Contains(t, got, model.Alloc)
+	require.NotNil(t, got[model.Alloc])
+	require.GreaterOrEqual(t, got[model.Alloc].Value, float64(0))
+
+	require.Contains(t, got, model.Sys)
+	require.NotNil(t, got[model.Sys])
+	require.GreaterOrEqual(t, got[model.Sys].Value, float64(0))
 }
 
-func TestNewStatsManager(t *testing.T) {
-	type args struct {
-		ctx context.Context
-	}
-	tests := []struct {
-		name string
-		args args
-		want *StatsManager
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewStatsManager(tt.args.ctx); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewStatsManager() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
+func TestStatsManager_GetMap_ReturnsDeepCopy(t *testing.T) {
+	sm := NewStatsManager()
 
-func TestStatsManager_GetMap(t *testing.T) {
-	type fields struct {
-		ctx context.Context
-		m   map[string]*model.Stat
-		mu  sync.RWMutex
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   map[string]*model.Stat
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := &StatsManager{
-				ctx: tt.fields.ctx,
-				m:   tt.fields.m,
-				mu:  tt.fields.mu,
-			}
-			if got := m.GetMap(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetMap() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
+	m1 := sm.GetMap()
 
-func TestStatsManager_WriteStats(t *testing.T) {
-	type fields struct {
-		ctx context.Context
-		m   map[string]*model.Stat
-		mu  sync.RWMutex
-	}
-	tests := []struct {
-		name   string
-		fields fields
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := &StatsManager{
-				ctx: tt.fields.ctx,
-				m:   tt.fields.m,
-				mu:  tt.fields.mu,
-			}
-			m.WriteStats()
-		})
-	}
-}
+	m1[model.Alloc].Value = 123456789
+	m1["newkey"] = &model.Stat{Type: "gauge", Value: 999}
 
-func TestStatsManager_GetMap_ReturnsSnapshot(t *testing.T) {
-	mn := NewStatsManager(context.Background())
-	mn.WriteStats()
+	m2 := sm.GetMap()
 
-	// Снимок №1
-	snap1 := mn.GetMap()
+	require.NotContains(t, m2, "newkey")
+	require.NotNil(t, m2[model.Alloc])
+	require.NotEqual(t, float64(123456789), m2[model.Alloc].Value)
 
-	// 1) В snapshot должны быть ключи
-	if _, ok := snap1[model.Alloc]; !ok {
-		t.Fatalf("snapshot missing key %q", model.Alloc)
-	}
-	if _, ok := snap1[model.PollCount]; !ok {
-		t.Fatalf("snapshot missing key %q", model.PollCount)
-	}
-
-	// 2) Значения должны совпадать с новым снимком (в момент получения)
-	alloc1 := snap1[model.Alloc].Value
-	poll1 := snap1[model.PollCount].Value
-
-	snap2 := mn.GetMap()
-	if snap2[model.Alloc].Value != alloc1 {
-		t.Fatalf("Alloc mismatch between snapshots: snap1=%v snap2=%v", alloc1, snap2[model.Alloc].Value)
-	}
-	if snap2[model.PollCount].Value != poll1 {
-		t.Fatalf("PollCount mismatch between snapshots: snap1=%v snap2=%v", poll1, snap2[model.PollCount].Value)
-	}
-
-	// 3) Указатели на Stat должны быть разными (иначе это не snapshot, а утечка внутренностей)
-	if snap1[model.Alloc] == snap2[model.Alloc] {
-		t.Fatal("expected different *Stat pointers for Alloc between snapshots, got same pointer")
-	}
-
-	snap1[model.Alloc].Value = 123456789
-
-	after := mn.GetMap()
-	if after[model.Alloc].Value == 123456789 {
-		t.Fatal("snapshot mutation leaked into manager state (Alloc.Value changed)")
-	}
-
-	// 4.2) Подменяем указатель в snapshot (вообще не должно влиять на менеджер)
-	snap1[model.Alloc] = &model.Stat{Type: "gauge", Value: 42}
-
-	after2 := mn.GetMap()
-	if after2[model.Alloc].Value == 42 {
-		t.Fatal("snapshot map pointer replacement leaked into manager state")
-	}
+	require.NotSame(t, m1[model.Alloc], m2[model.Alloc])
 }

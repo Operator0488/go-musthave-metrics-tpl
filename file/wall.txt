@@ -1,0 +1,10 @@
+{
+	"id": "GetSet190",
+	"type": "gauge",
+	"value": 619176.7884022065
+}
+{
+	"id": "GetSet70",
+	"type": "counter",
+	"delta": 3052435046
+}

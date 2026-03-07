@@ -3,99 +3,109 @@ package handler
 import (
 	"fmt"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/config"
+	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/model"
 	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/agent/service"
+	"github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger"
 	"github.com/go-resty/resty/v2"
-	"log"
-	"net/http"
-	"strings"
+	"go.uber.org/zap"
 )
-
-type Client struct {
-	cli  http.Client
-	mn   service.Manager
-	conf config.AgentConfig
-}
 
 type ClientResty struct {
 	cli  *resty.Client
 	mn   service.Manager
 	conf config.AgentConfig
+	log  logger.Logger
 }
 
+//go:generate mockgen -source=client.go -destination=./mocks/mock_client.go -package=mocks
 type Sender interface {
-	SendRequest() []error
-	GetRequests() []string
+	SendRequest()
+	SendRequestBatch()
 }
 
-func NewClient(mn service.Manager, conf config.AgentConfig) *Client {
-	return &Client{
-		cli:  http.Client{},
-		mn:   mn,
-		conf: conf,
-	}
-}
+func NewClientResty(log logger.Logger, mn service.Manager, conf config.AgentConfig) *ClientResty {
+	cli := resty.New()
 
-func NewClientResty(mn service.Manager, conf config.AgentConfig) *ClientResty {
+	cli.
+		OnBeforeRequest(compressGzip).
+		OnBeforeRequest(loggingRequest(log)).
+		OnAfterResponse(loggingResponse(log))
+
 	return &ClientResty{
-		cli:  resty.New(),
+		cli:  cli,
 		mn:   mn,
 		conf: conf,
+		log:  log,
 	}
 }
 
-func (c *Client) SendRequest() []error {
-	var errors []error
-
-	requests := c.GetRequests()
-
-	for _, req := range requests {
-		resp, err := c.cli.Post(req, "text/plain", strings.NewReader(""))
-		if err != nil || resp.StatusCode != http.StatusOK {
-			errors = append(errors, fmt.Errorf("Ошибка: %v\n Статус ответа: %v ", err, resp.StatusCode))
-		}
-	}
-
-	return errors
-}
-
-func (c *Client) GetRequests() []string {
+func (c *ClientResty) SendRequest() {
 	m := c.mn.GetMap()
-	str := make([]string, 0, len(m))
 
 	for k, v := range m {
-		str = append(str, fmt.Sprintf("http://%s/update/%s/%s/%v", c.conf.Port, v.Type, k, v.Value))
-		log.Println(fmt.Sprintf("http://127.0.0.1:8080/update/%s/%s/%v", v.Type, k, v.Value))
-	}
+		req := models.PostUpdateRequest{
+			MType: v.Type,
+			ID:    k,
+		}
+		if v.Type == "gauge" {
+			node := v.Value
+			req.Value = &node
+		} else {
+			node := int64(v.Value)
+			req.Delta = &node
+		}
 
-	return str
-}
+		resp, err := Retry(
+			c.cli.R().
+				SetHeader("Content-Type", "application/json").SetBody(req),
+			fmt.Sprintf("http://%s/update/", c.conf.Port),
+		)
 
-func (c *ClientResty) GetRequests() []string {
-	m := c.mn.GetMap()
-	str := make([]string, 0, len(m))
-
-	for k, v := range m {
-		str = append(str, fmt.Sprintf("http://%s/update/%s/%s/%v", c.conf.Port, v.Type, k, v.Value))
-		log.Println(fmt.Sprintf("http://127.0.0.1:8080/update/%s/%s/%v", v.Type, k, v.Value))
-	}
-
-	return str
-}
-
-func (c *ClientResty) SendRequest() []error {
-	var errors []error
-
-	requests := c.GetRequests()
-
-	for _, req := range requests {
-		resp, err := c.cli.R().
-			SetHeader("Content-Type", "text/plain").
-			Post(req)
-
-		if err != nil || resp.StatusCode() != http.StatusOK {
-			errors = append(errors, fmt.Errorf("Ошибка: %v\n Статус ответа: %v ", err, resp.StatusCode))
+		if err != nil {
+			status := 0
+			if resp != nil {
+				status = resp.StatusCode()
+			}
+			c.log.Info("Ошибка при отправке запроса",
+				zap.Error(err),
+				zap.Int("status", status))
 		}
 	}
+}
 
-	return errors
+func (c *ClientResty) SendRequestBatch() {
+	m := c.mn.GetMap()
+	reqs := make([]models.PostUpdateRequest, 0, len(m))
+
+	for k, v := range m {
+		req := models.PostUpdateRequest{
+			MType: v.Type,
+			ID:    k,
+		}
+		if v.Type == "gauge" {
+			node := v.Value
+			req.Value = &node
+		} else {
+			node := int64(v.Value)
+			req.Delta = &node
+		}
+
+		reqs = append(reqs, req)
+	}
+
+	resp, err := Retry(
+		c.cli.R().
+			SetHeader("Content-Type", "application/json").SetBody(reqs),
+		fmt.Sprintf("http://%s/updates/", c.conf.Port),
+	)
+
+	if err != nil {
+		status := 0
+		if resp != nil {
+			status = resp.StatusCode()
+		}
+		c.log.Info("Ошибка при отправке запроса",
+			zap.Error(err),
+			zap.Int("status", status))
+	}
 }

@@ -2,236 +2,248 @@ package repository
 
 import (
 	"context"
+	mocklog "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/logger/mocks"
 	models "github.com/Operator0488/go-musthave-metrics-tpl.git/internal/server/model"
-	"reflect"
-	"sync"
+	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
+	"os"
+	"path/filepath"
 	"testing"
 )
 
-func TestMaps_IncrementValue(t *testing.T) {
-	type fields struct {
-		ctx     context.Context
-		storage map[string]models.Metrics
-		mu      sync.RWMutex
-	}
-	type args struct {
-		name  string
-		value int64
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}{
-		{
-			name: "test storage incrementvalues #1",
-			fields: fields{
-				ctx: context.Background(),
-				storage: map[string]models.Metrics{
-					"Gauge":   models.Metrics{ID: "1", MType: models.Gauge, Value: PtrFloat64(10.012)},
-					"Counter": models.Metrics{ID: "1", MType: models.Counter, Delta: PtrInt64(11.00)},
-				},
-			},
-			args: args{
-				name:  "Counter",
-				value: 12,
-			},
-			wantErr: false,
-		},
-		{
-			name: "test storage incrementvalues #2",
-			fields: fields{
-				ctx: context.Background(),
-				storage: map[string]models.Metrics{
-					"Gauge":   models.Metrics{ID: "1", MType: models.Gauge, Value: PtrFloat64(10.012)},
-					"Counter": models.Metrics{ID: "1", MType: models.Counter, Delta: PtrInt64(11.00)},
-				},
-			},
-			args: args{
-				name:  "Counter",
-				value: 12,
-			},
-			wantErr: false,
-		},
-		{
-			name: "test storage incrementvalues #3",
-			fields: fields{
-				ctx: context.Background(),
-				storage: map[string]models.Metrics{
-					"Gauge":   models.Metrics{ID: "1", MType: models.Gauge, Value: PtrFloat64(10.012)},
-					"Counter": models.Metrics{ID: "1", MType: models.Counter, Delta: PtrInt64(11.00)},
-				},
-			},
-			args: args{
-				name:  "Type",
-				value: 14,
-			},
-			wantErr: false,
-		},
-		{
-			name: "test storage incrementvalues #4",
-			fields: fields{
-				ctx: context.Background(),
-				storage: map[string]models.Metrics{
-					"Gauge":   models.Metrics{ID: "1", MType: models.Gauge, Value: PtrFloat64(10.012)},
-					"Counter": models.Metrics{ID: "1", MType: models.Counter, Delta: PtrInt64(11.00)},
-				},
-			},
-			args: args{
-				name:  "Gauge",
-				value: 12,
-			},
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := &Maps{
-				ctx:     tt.fields.ctx,
-				storage: tt.fields.storage,
-				mu:      tt.fields.mu,
-			}
-			if err := m.IncrementValue(tt.args.name, tt.args.value); (err != nil) != tt.wantErr {
-				t.Errorf("IncrementValue() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if tt.name == "test storage incrementvalues #2" {
-				val := *tt.fields.storage["Counter"].Delta
-				if val != 23 {
-					t.Errorf("IncrementValue() val = %v, wantErr %v", val, 23)
-				}
-			}
-			if tt.name == "test storage incrementvalues #3" {
-				val := *tt.fields.storage["Type"].Delta
-				if val != 14 {
-					t.Errorf("IncrementValue() val = %v, wantErr %v", val, 14)
-				}
-			}
-		})
-	}
+func TestLoadFile_CreatesDirsAndFile(t *testing.T) {
+	tmp := t.TempDir()
+	path := filepath.Join(tmp, "dir1", "dir2", "file.txt")
+
+	f, err := loadFile(path)
+	require.NoError(t, err)
+	require.NotNil(t, f)
+	defer f.Close()
+
+	_, statErr := os.Stat(path)
+	require.NoError(t, statErr)
 }
 
-func TestMaps_SaverValue(t *testing.T) {
-	type fields struct {
-		ctx     context.Context
-		storage map[string]models.Metrics
-		mu      sync.RWMutex
-	}
-	type args struct {
-		name  string
-		value float64
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}{
-		{
-			name: "test storage savervalues #1",
-			fields: fields{
-				ctx: context.Background(),
-				storage: map[string]models.Metrics{
-					"Gauge":   models.Metrics{ID: "1", MType: models.Gauge, Value: PtrFloat64(10.012)},
-					"Counter": models.Metrics{ID: "1", MType: models.Counter, Delta: PtrInt64(11.00)},
-				},
-			},
-			args: args{
-				name:  "Gauge",
-				value: 12.0,
-			},
-			wantErr: false,
-		},
-		{
-			name: "test storage savervalues #2",
-			fields: fields{
-				ctx: context.Background(),
-				storage: map[string]models.Metrics{
-					"Gauge":   models.Metrics{ID: "1", MType: models.Gauge, Value: PtrFloat64(10.012)},
-					"Counter": models.Metrics{ID: "1", MType: models.Counter, Delta: PtrInt64(11.00)},
-				},
-			},
-			args: args{
-				name:  "Gauge",
-				value: 12,
-			},
-			wantErr: false,
-		},
-		{
-			name: "test storage savervalues #3",
-			fields: fields{
-				ctx: context.Background(),
-				storage: map[string]models.Metrics{
-					"Gauge":   models.Metrics{ID: "1", MType: models.Gauge, Value: PtrFloat64(10.012)},
-					"Counter": models.Metrics{ID: "1", MType: models.Counter, Delta: PtrInt64(11.00)},
-				},
-			},
-			args: args{
-				name:  "Counter",
-				value: 12,
-			},
-			wantErr: true,
-		},
-		{
-			name: "test storage savervalues #4",
-			fields: fields{
-				ctx: context.Background(),
-				storage: map[string]models.Metrics{
-					"Gauge":   models.Metrics{ID: "1", MType: models.Gauge, Value: PtrFloat64(10.012)},
-					"Counter": models.Metrics{ID: "1", MType: models.Counter, Delta: PtrInt64(11.00)},
-				},
-			},
-			args: args{
-				name:  "Gauge2",
-				value: 12.000000000,
-			},
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := &Maps{
-				ctx:     tt.fields.ctx,
-				storage: tt.fields.storage,
-				mu:      tt.fields.mu,
-			}
-			if err := m.SaverValue(tt.args.name, tt.args.value); (err != nil) != tt.wantErr {
-				t.Errorf("SaverValue() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
+func TestMaps_SaverValue_NewGauge_OK(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	tmp := t.TempDir()
+	path := filepath.Join(tmp, "file.txt")
+
+	log := mocklog.NewMockLogger(ctrl)
+
+	log.EXPECT().
+		Info(gomock.Any(), gomock.Any()).
+		AnyTimes()
+
+	m, err := NewMaps(context.Background(), log, false, path, 0)
+	require.NoError(t, err)
+	defer m.file.Close()
+
+	err = m.SaveValue(context.Background(), "LastGc", 12.34)
+	require.NoError(t, err)
+
+	got, err := m.GetValueGauge(context.Background(), "LastGc")
+	require.NoError(t, err)
+	require.Equal(t, 12.34, got)
 }
 
-func TestNewMaps(t *testing.T) {
-	type args struct {
-		ctx context.Context
+func TestMaps_SaverValue_TypeMismatch(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	tmp := t.TempDir()
+	path := filepath.Join(tmp, "file.txt")
+
+	log := mocklog.NewMockLogger(ctrl)
+
+	log.EXPECT().
+		Info(gomock.Any(), gomock.Any()).
+		AnyTimes()
+
+	m, err := NewMaps(context.Background(), log, false, path, 0)
+	require.NoError(t, err)
+	defer m.file.Close()
+
+	// положим counter под тем же именем
+	m.storage["LastGc"] = models.MetricStore{
+		ID:    "LastGc",
+		MType: models.Counter,
+		Delta: 10,
 	}
-	tests := []struct {
-		name string
-		args args
-		want *Maps
-	}{
-		{
-			name: "test storage newmaps #1",
-			args: args{
-				ctx: context.Background(),
-			},
-			want: &Maps{},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewMaps(tt.args.ctx); !reflect.DeepEqual(reflect.TypeOf(got).Name(), reflect.TypeOf(tt.want).Name()) {
-				t.Errorf("NewMaps() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+
+	err = m.SaveValue(context.Background(), "LastGc", 1.0)
+	require.ErrorIs(t, err, models.ErrorDiffType)
 }
 
-func PtrInt64(v int64) *int64 {
-	return &v
+func TestMaps_IncrementValue_NewCounter_OK(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	tmp := t.TempDir()
+	path := filepath.Join(tmp, "file.txt")
+
+	log := mocklog.NewMockLogger(ctrl)
+
+	log.EXPECT().
+		Info(gomock.Any(), gomock.Any()).
+		AnyTimes()
+
+	m, err := NewMaps(context.Background(), log, false, path, 0)
+	require.NoError(t, err)
+	defer m.file.Close()
+
+	require.NoError(t, m.IncrementValue(context.Background(), "Lastgc", 10))
+	require.NoError(t, m.IncrementValue(context.Background(), "Lastgc", 5))
+
+	got, err := m.GetValueCounter(context.Background(), "Lastgc")
+	require.NoError(t, err)
+	require.Equal(t, int64(15), got)
 }
 
-func PtrFloat64(v float64) *float64 {
-	return &v
+func TestMaps_IncrementValue_TypeMismatch(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	tmp := t.TempDir()
+	path := filepath.Join(tmp, "file.txt")
+
+	log := mocklog.NewMockLogger(ctrl)
+
+	log.EXPECT().
+		Info(gomock.Any(), gomock.Any()).
+		AnyTimes()
+
+	m, err := NewMaps(context.Background(), log, false, path, 0)
+	require.NoError(t, err)
+	defer m.file.Close()
+
+	m.storage["Lastgc"] = models.MetricStore{
+		ID:    "Lastgc",
+		MType: models.Gauge,
+		Value: 1.23,
+	}
+
+	err = m.IncrementValue(context.Background(), "Lastgc", 1)
+	require.ErrorIs(t, err, models.ErrorGetValue)
+}
+
+func TestMaps_GetValue_NotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	tmp := t.TempDir()
+	path := filepath.Join(tmp, "file.txt")
+
+	log := mocklog.NewMockLogger(ctrl)
+
+	log.EXPECT().
+		Info(gomock.Any(), gomock.Any()).
+		AnyTimes()
+
+	m, err := NewMaps(context.Background(), log, false, path, 0)
+	require.NoError(t, err)
+	defer m.file.Close()
+
+	_, err = m.GetValueGauge(context.Background(), "Lastgc")
+	require.ErrorIs(t, err, models.ErrorNotDB)
+
+	_, err = m.GetValueCounter(context.Background(), "Lastgc")
+	require.ErrorIs(t, err, models.ErrorNotDB)
+}
+
+func TestMaps_GetValues_OK(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	tmp := t.TempDir()
+	path := filepath.Join(tmp, "file.txt")
+
+	log := mocklog.NewMockLogger(ctrl)
+
+	log.EXPECT().
+		Info(gomock.Any(), gomock.Any()).
+		AnyTimes()
+
+	m, err := NewMaps(context.Background(), log, false, path, 0)
+	require.NoError(t, err)
+	defer m.file.Close()
+
+	require.NoError(t, m.SaveValue(context.Background(), "Lastgc", 1.5))
+	require.NoError(t, m.IncrementValue(context.Background(), "Lastgc2", 7))
+
+	all, err := m.GetValues(context.Background())
+	require.NoError(t, err)
+
+	require.Equal(t, 1.5, all["Lastgc"])
+	require.Equal(t, int64(7), all["Lastgc2"])
+}
+
+func TestMaps_GetValues_UnknownType(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	tmp := t.TempDir()
+	path := filepath.Join(tmp, "file.txt")
+
+	log := mocklog.NewMockLogger(ctrl)
+
+	log.EXPECT().
+		Info(gomock.Any(), gomock.Any()).
+		AnyTimes()
+
+	m, err := NewMaps(context.Background(), log, false, path, 0)
+	require.NoError(t, err)
+	defer m.file.Close()
+
+	m.storage["Lastgc"] = models.MetricStore{
+		ID:    "Lastgc",
+		MType: "Lastgc",
+	}
+
+	_, err = m.GetValues(context.Background())
+	require.ErrorIs(t, err, models.ErrorUnType)
+}
+
+func TestMaps_PersistAndRestore_FromFile(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	tmp := t.TempDir()
+	path := filepath.Join(tmp, "file.txt")
+
+	log := mocklog.NewMockLogger(ctrl)
+
+	log.EXPECT().
+		Info(gomock.Any(), gomock.Any()).
+		AnyTimes()
+
+	m1, err := NewMaps(context.Background(), log, false, path, 0)
+	require.NoError(t, err)
+	require.NoError(t, m1.SaveValue(context.Background(), "Lastgc", 9.99))
+	require.NoError(t, m1.SaveValue(context.Background(), "Lastgc", 5.99))
+	require.NoError(t, m1.IncrementValue(context.Background(), "Lastgc2", 10))
+	require.NoError(t, m1.IncrementValue(context.Background(), "Lastgc2", 5))
+	require.NoError(t, m1.file.Close())
+
+	gotCounter, err := m1.GetValueCounter(context.Background(), "Lastgc2")
+	require.NoError(t, err)
+	require.Equal(t, int64(15), gotCounter)
+
+	gotGauge, err := m1.GetValueGauge(context.Background(), "Lastgc")
+	require.NoError(t, err)
+	require.Equal(t, 5.99, gotGauge)
+
+	m2, err := NewMaps(context.Background(), log, true, path, 0)
+	require.NoError(t, err)
+	defer m2.file.Close()
+
+	gotGauge, err = m2.GetValueGauge(context.Background(), "Lastgc")
+	require.NoError(t, err)
+	require.Equal(t, 5.99, gotGauge)
+
+	gotCounter, err = m2.GetValueCounter(context.Background(), "Lastgc2")
+	require.NoError(t, err)
+	require.Equal(t, int64(15), gotCounter)
 }

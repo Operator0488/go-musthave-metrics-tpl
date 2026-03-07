@@ -12,6 +12,7 @@ type StatsManager struct {
 	mu sync.RWMutex
 }
 
+//go:generate mockgen -source=manager.go -destination=./mocks/mock_manager.go -package=mocks
 type Manager interface {
 	WriteStats()
 	GetMap() map[string]*model.Stat
@@ -19,7 +20,6 @@ type Manager interface {
 
 // NewStatsManager -
 func NewStatsManager() *StatsManager {
-
 	var s = StatsManager{
 		m: NewMap(),
 	}
@@ -28,42 +28,40 @@ func NewStatsManager() *StatsManager {
 	return &s
 }
 
-// NewMap -
 func NewMap() map[string]*model.Stat {
 	return map[string]*model.Stat{
-		model.GCCPUFraction: {"gauge", 0.0},
-		model.NumForcedGC:   {"gauge", 0.0},
-		model.NumGC:         {"gauge", 0.0},
-		model.PauseTotalNs:  {"gauge", 0.0},
-		model.LastGC:        {"gauge", 0.0},
-		model.MCacheSys:     {"gauge", 0.0},
-		model.MCacheInuse:   {"gauge", 0.0},
-		model.NextGC:        {"gauge", 0.0},
-		model.OtherSys:      {"gauge", 0.0},
-		model.GCSys:         {"gauge", 0.0},
-		model.BuckHashSys:   {"gauge", 0.0},
-		model.MSpanSys:      {"gauge", 0.0},
-		model.MSpanInuse:    {"gauge", 0.0},
-		model.StackSys:      {"gauge", 0.0},
-		model.StackInuse:    {"gauge", 0.0},
-		model.HeapObjects:   {"gauge", 0.0},
-		model.HeapReleased:  {"gauge", 0.0},
-		model.HeapInuse:     {"gauge", 0.0},
-		model.HeapIdle:      {"gauge", 0.0},
-		model.HeapSys:       {"gauge", 0.0},
-		model.HeapAlloc:     {"gauge", 0.0},
-		model.Frees:         {"gauge", 0.0},
-		model.Mallocs:       {"gauge", 0.0},
-		model.Lookups:       {"gauge", 0.0},
-		model.Sys:           {"gauge", 0.0},
-		model.TotalAlloc:    {"gauge", 0.0},
-		model.Alloc:         {"gauge", 0.0},
-		model.RandomValue:   {"gauge", 0.0},
-		model.PollCount:     {"counter", 0.0},
+		model.GCCPUFraction: {Type: "gauge", Value: 0.0},
+		model.NumForcedGC:   {Type: "gauge", Value: 0.0},
+		model.NumGC:         {Type: "gauge", Value: 0.0},
+		model.PauseTotalNs:  {Type: "gauge", Value: 0.0},
+		model.LastGC:        {Type: "gauge", Value: 0.0},
+		model.MCacheSys:     {Type: "gauge", Value: 0.0},
+		model.MCacheInuse:   {Type: "gauge", Value: 0.0},
+		model.NextGC:        {Type: "gauge", Value: 0.0},
+		model.OtherSys:      {Type: "gauge", Value: 0.0},
+		model.GCSys:         {Type: "gauge", Value: 0.0},
+		model.BuckHashSys:   {Type: "gauge", Value: 0.0},
+		model.MSpanSys:      {Type: "gauge", Value: 0.0},
+		model.MSpanInuse:    {Type: "gauge", Value: 0.0},
+		model.StackSys:      {Type: "gauge", Value: 0.0},
+		model.StackInuse:    {Type: "gauge", Value: 0.0},
+		model.HeapObjects:   {Type: "gauge", Value: 0.0},
+		model.HeapReleased:  {Type: "gauge", Value: 0.0},
+		model.HeapInuse:     {Type: "gauge", Value: 0.0},
+		model.HeapIdle:      {Type: "gauge", Value: 0.0},
+		model.HeapSys:       {Type: "gauge", Value: 0.0},
+		model.HeapAlloc:     {Type: "gauge", Value: 0.0},
+		model.Frees:         {Type: "gauge", Value: 0.0},
+		model.Mallocs:       {Type: "gauge", Value: 0.0},
+		model.Lookups:       {Type: "gauge", Value: 0.0},
+		model.Sys:           {Type: "gauge", Value: 0.0},
+		model.TotalAlloc:    {Type: "gauge", Value: 0.0},
+		model.Alloc:         {Type: "gauge", Value: 0.0},
+		model.RandomValue:   {Type: "gauge", Value: 0.0},
+		model.PollCount:     {Type: "counter", Value: 0.0},
 	}
 }
 
-// WriteStats -
 func (m *StatsManager) WriteStats() {
 	var s runtime.MemStats
 	runtime.SetMutexProfileFraction(10)
@@ -97,15 +95,15 @@ func (m *StatsManager) WriteStats() {
 	m.m[model.StackInuse].Value = float64(s.StackInuse)
 	m.m[model.StackSys].Value = float64(s.StackSys)
 	m.m[model.TotalAlloc].Value = float64(s.TotalAlloc)
-	m.m[model.PollCount].Value += 1
+	m.m[model.PollCount].Value = 1
 	m.m[model.RandomValue].Value = rand.Float64()
 	m.mu.Unlock()
 
 }
 
 func (m *StatsManager) GetMap() map[string]*model.Stat {
-	m.mu.RLock()
-	defer m.mu.RUnlock()
+	m.mu.Lock()
+	defer m.mu.Unlock()
 
 	cp := make(map[string]*model.Stat, len(m.m))
 	for k, v := range m.m {

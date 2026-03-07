@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"net/http"
 )
 
@@ -21,12 +20,5 @@ func checkPost(next http.Handler) http.Handler {
 			return
 		}
 		next.ServeHTTP(w, r)
-	})
-}
-
-func logging(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		next.ServeHTTP(w, r)
-		log.Printf("%s %s", r.Method, r.URL.Path)
 	})
 }

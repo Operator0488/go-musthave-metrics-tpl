@@ -1,0 +1,224 @@
+./metricstest-darwin-arm64 -test.v -test.run=^TestIteration9\
+    	-agent-binary-path=cmd/agent/agent \
+        -binary-path=cmd/server/server \
+        -file-storage-path=./file \
+      	-server-port=8080 \
+        -source-path=.
+=== RUN   TestIteration9
+=== RUN   TestIteration9/TestCounterHandlers
+=== RUN   TestIteration9/TestCounterHandlers/update
+=== RUN   TestIteration9/TestCounterHandlers/restart_server
+    iteration9_test.go:125: Получен STDOUT лог процесса:
+        
+        {"level":"info","ts":1771245297.792938,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000265917}
+        {"level":"info","ts":1771245297.79306,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":404,"size":81}
+        {"level":"info","ts":1771245297.794185,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000187208}
+        {"level":"info","ts":1771245297.794197,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245297.79472,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.00005775}
+        {"level":"info","ts":1771245297.7947268,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245297.795257,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000355042}
+        {"level":"info","ts":1771245297.7952662,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":82}
+=== RUN   TestIteration9/TestCounterHandlers/get
+=== RUN   TestIteration9/TestGaugeHandlers
+=== RUN   TestIteration9/TestGaugeHandlers/update
+=== RUN   TestIteration9/TestGaugeHandlers/restart_server
+    iteration9_test.go:125: Получен STDOUT лог процесса:
+        
+        {"level":"info","ts":1771245302.910021,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000478333}
+        {"level":"info","ts":1771245302.9101,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":82}
+        {"level":"info","ts":1771245302.912948,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000431209}
+        {"level":"info","ts":1771245302.913171,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245302.913669,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.000118625}
+        {"level":"info","ts":1771245302.9136882,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":87}
+        {"level":"info","ts":1771245307.176724,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000932583}
+        {"level":"info","ts":1771245307.17678,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.1773922,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.00012725}
+        {"level":"info","ts":1771245307.177409,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.178721,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000525958}
+        {"level":"info","ts":1771245307.178751,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.1792152,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000062042}
+        {"level":"info","ts":1771245307.179232,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.180324,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000446417}
+        {"level":"info","ts":1771245307.180353,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.181066,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000112083}
+        {"level":"info","ts":1771245307.1811042,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.182637,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000565625}
+        {"level":"info","ts":1771245307.182657,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.1830568,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000061416}
+        {"level":"info","ts":1771245307.1830819,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.18415,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000425791}
+        {"level":"info","ts":1771245307.184172,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.184515,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000050708}
+        {"level":"info","ts":1771245307.18453,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.18662,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000492917}
+        {"level":"info","ts":1771245307.186647,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.187018,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000065208}
+        {"level":"info","ts":1771245307.1870341,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.188139,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000472}
+        {"level":"info","ts":1771245307.188164,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.1884959,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000052041}
+        {"level":"info","ts":1771245307.188509,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.1895628,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000420875}
+        {"level":"info","ts":1771245307.189582,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.189944,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000054084}
+        {"level":"info","ts":1771245307.189961,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.190963,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.00042975}
+        {"level":"info","ts":1771245307.1909802,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.191328,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000059917}
+        {"level":"info","ts":1771245307.191343,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.1923819,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000429208}
+        {"level":"info","ts":1771245307.192396,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.192671,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000042583}
+        {"level":"info","ts":1771245307.19268,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.1936152,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000317125}
+        {"level":"info","ts":1771245307.1936278,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.1939158,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000041541}
+        {"level":"info","ts":1771245307.193929,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.1948302,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000330458}
+        {"level":"info","ts":1771245307.194849,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.195132,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.00004875}
+        {"level":"info","ts":1771245307.195143,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.196018,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000361583}
+        {"level":"info","ts":1771245307.196036,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.196314,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000042334}
+        {"level":"info","ts":1771245307.1963258,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.197186,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000306208}
+        {"level":"info","ts":1771245307.197203,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.197532,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000040667}
+        {"level":"info","ts":1771245307.1975439,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+        {"level":"info","ts":1771245307.198407,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/update/","method":"POST","time":0.000359875}
+        {"level":"info","ts":1771245307.198421,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":23}
+=== RUN   TestIteration9/TestGaugeHandlers/get
+=== NAME  TestIteration9
+    iteration9_test.go:156: Получен STDOUT лог процесса:
+        
+        {"level":"info","ts":1771245297.1747122,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.184086,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": read tcp [::1]:65044->[::1]:8080: read: connection reset by peer","status":0}
+        {"level":"info","ts":1771245297.1843798,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.185152,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.185341,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.1859,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.187123,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.1877801,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.187883,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.1884081,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.188513,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.189028,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.189425,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.190188,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.190262,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.1911218,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.1911922,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.1920362,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.192103,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.19263,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.1926908,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.1931672,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.1933491,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.194054,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.194103,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.194499,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.19455,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.195097,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.195154,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.1956182,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.1956758,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.19613,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.196268,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.19704,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.197088,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.197597,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.197647,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.1981308,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.198464,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.198987,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.199036,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.199508,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.199559,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.199959,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.200238,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.2006981,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.2007449,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.201205,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.201251,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.201668,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.2019892,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.2024808,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.202532,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.2030232,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.203074,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.2036211,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245297.203889,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245297.205267,"caller":"logger/logger.go:38","msg":"Ошибка при отправке запроса","component":"client","error":"Post \"http://localhost:8080/update/\": dial tcp [::1]:8080: connect: connection refused","status":0}
+        {"level":"info","ts":1771245307.173328,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.177002,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.177122,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.1776981,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.1779351,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.178934,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.179015,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.179321,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.179484,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.180574,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.180703,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.1812649,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.181603,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.1827788,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.1828532,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.183191,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.1833768,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.184281,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.184347,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.1846259,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.185966,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.18676,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.186823,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.1871302,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.1873121,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.1882749,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.1883361,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.18861,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.188846,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.189713,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.189774,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.190061,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.1902862,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.1910882,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.191146,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.191455,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.19168,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.192491,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.192539,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.1927612,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.193069,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.193714,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.1937652,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.19402,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.194243,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.194935,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.194985,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.195219,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.195383,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.196115,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.196161,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.196408,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.196578,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.1973288,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.197391,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.1976168,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+        {"level":"info","ts":1771245307.197943,"caller":"logger/logger.go:38","msg":"Отправка запроса","component":"client","url":"http://localhost:8080/update/","method":"POST"}
+        {"level":"info","ts":1771245307.198535,"caller":"logger/logger.go:38","msg":"Получен ответ","component":"client","status":200,"body":""}
+    iteration9_test.go:125: Получен STDOUT лог процесса:
+        
+        {"level":"info","ts":1771245308.026058,"caller":"logger/logger.go:38","msg":"HTTP запрос","component":"handler","URL":"/value/","method":"POST","time":0.00043925}
+        {"level":"info","ts":1771245308.026143,"caller":"logger/logger.go:38","msg":"HTTP ответ","component":"handler","status":200,"size":87}
+--- PASS: TestIteration9 (20.89s)
+    --- PASS: TestIteration9/TestCounterHandlers (5.12s)
+        --- PASS: TestIteration9/TestCounterHandlers/update (0.01s)
+        --- PASS: TestIteration9/TestCounterHandlers/restart_server (5.11s)
+        --- PASS: TestIteration9/TestCounterHandlers/get (0.00s)
+    --- PASS: TestIteration9/TestGaugeHandlers (5.12s)
+        --- PASS: TestIteration9/TestGaugeHandlers/update (0.00s)
+        --- PASS: TestIteration9/TestGaugeHandlers/restart_server (5.11s)
+        --- PASS: TestIteration9/TestGaugeHandlers/get (0.00s)
+PASS
