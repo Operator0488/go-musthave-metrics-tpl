@@ -3,8 +3,10 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5/pgconn"
+	"net"
 	"strconv"
 	"time"
 )
@@ -37,18 +39,18 @@ func retry(ctx context.Context, fn func() error) error {
 }
 
 func isRetryDB(err error) bool {
-	if err == nil {
-		return false
-	}
-
-	if errors.Is(err, context.DeadlineExceeded) {
-		return false
-	}
-
 	var pgErr *pgconn.PgError
 	if errors.As(err, &pgErr) && pgErr.Code == pgerrcode.UniqueViolation {
-		return false
+		if pgErr.Code[:2] == "08" {
+			fmt.Println("Connection error:", pgErr.Code)
+			return true
+		}
 	}
 
-	return true
+	var netErr net.Error
+	if errors.As(err, &netErr) && netErr.Temporary() {
+		return true
+	}
+
+	return false
 }
